@@ -1,0 +1,21 @@
+{
+  "name": "student-platform",
+  "version": "1.0.0",
+  "description": "Helpful website for computer engineering students",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emirsafa34/student-platform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Emirsafa34/student-platform/issues"
+  },
+  "homepage": "https://github.com/Emirsafa34/student-platform#readme"
+}
