@@ -1,13 +1,13 @@
-// server.js
+// backend/server.js
 
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import cors from 'cors';
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const cors = require('cors');
 
-import userRoutes from './routes/userRoutes.js';
-import courseRoutes from './routes/courseRoutes.js';
-import qaRoutes from './routes/qaRoutes.js';
+const userRoutes = require('./routes/userRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const qaRoutes = require('./routes/qaRoutes');
 
 dotenv.config();
 
