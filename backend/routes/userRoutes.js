@@ -13,6 +13,11 @@ const generateToken = (user) => {
   });
 };
 
+// Test amaçlı GET / route
+router.get('/', (req, res) => {
+  res.send('✅ Kullanıcı API çalışıyor');
+});
+
 // Kullanıcı kaydı
 router.post('/register', async (req, res) => {
   const { username, email, password, role } = req.body;
