@@ -16,15 +16,13 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB bağlantısı
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✅ MongoDB bağlantısı başarılı'))
-.catch((err) => {
-  console.error('❌ MongoDB bağlantı hatası:', err.message);
-  process.exit(1);
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB bağlantısı başarılı'))
+  .catch((err) => {
+    console.error('❌ MongoDB bağlantı hatası:', err.message);
+    process.exit(1);
+  });
+
 
 // API rotaları
 app.use('/api/users', userRoutes);
