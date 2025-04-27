@@ -14,7 +14,7 @@
       </div>
       <div>
         <label>Şifre:</label>
-        <input v-model="password" type="password" required />
+        <input v-model="password" type="password" required minlength="6" />
       </div>
       <div>
         <label>Rol:</label>
@@ -23,7 +23,9 @@
           <option value="admin">Admin</option>
         </select>
       </div>
-      <button type="submit">Kayıt Ol</button>
+      <button type="submit" :disabled="loading">
+        {{ loading ? 'Bekleyin...' : 'Kayıt Ol' }}
+      </button>
       <p v-if="error" class="error">{{ error }}</p>
     </form>
   </div>
@@ -31,35 +33,42 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
+import { register } from '../services/authService';
 
-const router = useRouter();
-const name = ref('');
-const email = ref('');
+const router    = useRouter();
+const authStore = useAuthStore();
+
+const name     = ref('');
+const email    = ref('');
 const password = ref('');
-const role = ref('user');
-const error = ref(null);
+const role     = ref('user');
+const loading  = ref(false);
+const error    = ref('');
 
 const handleRegister = async () => {
-  error.value = null;
+  loading.value = true;
+  error.value   = '';
   try {
-    const res = await axios.post('http://localhost:5000/api/users/register', {
-      name: name.value,
-      email: email.value,
+    const { token, user } = await register({
+      name:     name.value,
+      email:    email.value,
       password: password.value,
-      role: role.value,
+      role:     role.value
     });
-    localStorage.setItem('token', res.data.token);
-    localStorage.setItem('role', res.data.role);
 
-    if (res.data.role === 'admin') {
-      router.push('/dashboard');
-    } else {
-      router.push('/qas');
-    }
+    authStore.user  = user;
+    authStore.token = token;
+    localStorage.setItem('token', token);
+
+    // Rol bazlı yönlendirme
+    if (user.role === 'admin') router.push('/dashboard');
+    else router.push('/qas');
   } catch (err) {
-    error.value = 'Kayıt başarısız. Bilgileri kontrol edin.';
+    error.value = err.message || 'Kayıt başarısız. Bilgileri kontrol edin.';
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -76,5 +85,9 @@ const handleRegister = async () => {
 .error {
   color: red;
   margin-top: 10px;
+}
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

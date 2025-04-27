@@ -1,5 +1,3 @@
-// src/views/Login.vue
-
 <template>
   <div class="login-container">
     <h2>Giriş Yap</h2>
@@ -12,7 +10,9 @@
         <label>Şifre:</label>
         <input v-model="password" type="password" required />
       </div>
-      <button type="submit">Giriş</button>
+      <button type="submit" :disabled="loading">
+        {{ loading ? 'Bekleyin...' : 'Giriş Yap' }}
+      </button>
       <p v-if="error" class="error">{{ error }}</p>
     </form>
   </div>
@@ -20,31 +20,40 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
+import { login } from '../services/authService';
 
-const router = useRouter();
-const email = ref('');
-const password = ref('');
-const error = ref(null);
+const router    = useRouter();
+const authStore = useAuthStore();
+
+const email     = ref('');
+const password  = ref('');
+const loading   = ref(false);
+const error     = ref('');
 
 const handleLogin = async () => {
-  error.value = null;
+  loading.value = true;
+  error.value   = '';
   try {
-    const res = await axios.post('http://localhost:5000/api/users/login', {
-      email: email.value,
-      password: password.value,
+    const { token, user } = await login({
+      email:    email.value,
+      password: password.value
     });
-    localStorage.setItem('token', res.data.token);
-    localStorage.setItem('role', res.data.role);
 
-    if (res.data.role === 'admin') {
+    authStore.user  = user;
+    authStore.token = token;
+    localStorage.setItem('token', token);
+
+    if (user.role === 'admin') {
       router.push('/dashboard');
     } else {
       router.push('/qas');
     }
   } catch (err) {
-    error.value = 'Giriş başarısız. Bilgileri kontrol edin.';
+    error.value = err.message || 'Giriş başarısız. Bilgileri kontrol edin.';
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -61,5 +70,9 @@ const handleLogin = async () => {
 .error {
   color: red;
   margin-top: 10px;
+}
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>
