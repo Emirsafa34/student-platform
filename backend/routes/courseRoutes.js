@@ -1,8 +1,6 @@
-// backend/routes/courseRoutes.js
-
+// BACKEND: routes/courseRoutes.js
 const express = require('express');
 const router = express.Router();
-
 const courseController = require('../controllers/courseController');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 
@@ -18,4 +16,4 @@ router.put('/:id', protect, adminOnly, courseController.updateCourse);
 // Ders sil (soft delete - admin)
 router.delete('/:id', protect, adminOnly, courseController.deleteCourse);
 
-module.exports = router; 
+module.exports = router;

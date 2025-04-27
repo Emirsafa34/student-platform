@@ -7,11 +7,11 @@ const User = require('../models/User');
 const router = express.Router();
 
 // JWT oluşturma fonksiyonu
-const generateToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, 'jwt-secret', {
-    expiresIn: '7d',
-  });
-};
+const generateToken = (id) => {
+    const secret = process.env.JWT_SECRET;
+    const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
+    return jwt.sign({ id }, secret, { expiresIn });
+   };
 
 // Test amaçlı GET / route
 router.get('/', (req, res) => {

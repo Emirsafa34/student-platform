@@ -1,6 +1,5 @@
-
 // backend/middleware/authMiddleware.js
-
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -9,7 +8,7 @@ const protect = async (req, res, next) => {
 
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
+    req.headers.authorization.startsWith('Bearer ')
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
@@ -26,6 +25,9 @@ const protect = async (req, res, next) => {
     }
     next();
   } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, message: 'Token süresi dolmuş.' });
+    }
     return res.status(401).json({ success: false, message: 'Geçersiz token.' });
   }
 };

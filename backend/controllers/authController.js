@@ -1,60 +1,48 @@
-// backend/controllers/authController.js
-
-const User = require('../models/user');
+// controllers/authController.js
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
+const { validationResult } = require('express-validator');
 
-// JWT Token üreten fonksiyon
-const generateToken = (user) => {
-  return jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
-};
+const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 
-// Kullanıcı Kayıt
 exports.register = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   try {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(409).json({ message: 'User already exists' });
 
-    const user = new User({ username, email, password });
+    const hashed = await bcrypt.hash(password, 12);
+    const user = new User({ name, email, password: hashed });
     await user.save();
 
-    const token = generateToken(user);
-
-    res.status(201).json({
-      success: true,
-      message: 'Kullanıcı başarıyla kaydedildi.',
-      token,
-    });
-  } catch (error) {
-    next(error);
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    res.status(201).json({ token, user: { id: user._id, name, email } });
+  } catch (err) {
+    next(err);
   }
 };
 
-// Kullanıcı Giris
 exports.login = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   try {
     const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const user = await User.findOne({ email, isDeleted: false });
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Kullanıcı bulunamadı.' });
-    }
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Geçersiz şifre.' });
-    }
-
-    const token = generateToken(user);
-
-    res.status(200).json({
-      success: true,
-      message: 'Giriş başarılı.',
-      token,
-    });
-  } catch (error) {
-    next(error);
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    res.json({ token, user: { id: user._id, name: user.name, email } });
+  } catch (err) {
+    next(err);
   }
 };
