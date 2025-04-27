@@ -1,20 +1,23 @@
 // backend/server.js
 
-const express = require('express');
+const express  = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const cors = require('cors');
-
-const userRoutes = require('./routes/userRoutes');
-const courseRoutes = require('./routes/courseRoutes');
-const qaRoutes = require('./routes/qaRoutes');
-const { errorHandler } = require('./middleware/errorMiddleware'); // 🔥 Burayı ekledik
+const dotenv   = require('dotenv');
+const cors     = require('cors');
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Controller / route dosyalarını yükle
+ const userRoutes   = require('./routes/userRoutes');
+ const authRoutes   = require('./routes/authRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const qaRoutes     = require('./routes/qaRoutes');
+
+const { errorHandler } = require('./middleware/errorMiddleware');
 
 // MongoDB bağlantısı
 mongoose.connect(process.env.MONGO_URI)
@@ -24,17 +27,18 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
 
-// API rotaları
-app.use('/api/users', userRoutes);
+// 🚀 4. Adım: Route’ları mount et
+app.use('/api/auth',  authRoutes);    // register & login
+app.use('/api/users', userRoutes);    // profile ve user-CRUD
 app.use('/api/courses', courseRoutes);
-app.use('/api/qas', qaRoutes);
+app.use('/api/qas',     qaRoutes);
 
 // Temel route
 app.get('/', (req, res) => {
   res.send('🎯 API çalışıyor');
 });
 
-// Hata yakalama middleware'i - 🔥 Bu satırı EN SONA ekledik
+// Hata yakalama middleware’i (EN SONA)
 app.use(errorHandler);
 
 // Sunucu başlatma
