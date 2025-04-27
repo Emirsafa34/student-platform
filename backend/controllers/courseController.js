@@ -2,7 +2,7 @@
 
 const Course = require('../models/Course');
 
-// Yeni ders ekle (admin)
+// Yeni ders ekle (sadece admin)
 exports.createCourse = async (req, res, next) => {
   try {
     const newCourse = new Course({
@@ -27,25 +27,36 @@ exports.getCourses = async (req, res, next) => {
   }
 };
 
-// Ders güncelle (admin)
+// Ders güncelle (sadece admin)
 exports.updateCourse = async (req, res, next) => {
   try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
+    }
+
     const updated = await Course.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
     );
+
     res.status(200).json({ success: true, course: updated });
   } catch (err) {
     next(err);
   }
 };
 
-// Ders sil (soft delete - admin)
+// Ders sil (soft delete - sadece admin)
 exports.deleteCourse = async (req, res, next) => {
   try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
+    }
+
     await Course.findByIdAndUpdate(req.params.id, { isDeleted: true });
-    res.status(200).json({ success: true, message: 'Ders silindi (soft delete).' });
+    res.status(200).json({ success: true, message: 'Ders başarıyla silindi (soft delete).' });
   } catch (err) {
     next(err);
   }

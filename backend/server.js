@@ -8,6 +8,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const qaRoutes = require('./routes/qaRoutes');
+const { errorHandler } = require('./middleware/errorMiddleware'); // 🔥 Burayı ekledik
 
 dotenv.config();
 
@@ -23,7 +24,6 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
 
-
 // API rotaları
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
@@ -33,6 +33,9 @@ app.use('/api/qas', qaRoutes);
 app.get('/', (req, res) => {
   res.send('🎯 API çalışıyor');
 });
+
+// Hata yakalama middleware'i - 🔥 Bu satırı EN SONA ekledik
+app.use(errorHandler);
 
 // Sunucu başlatma
 const PORT = process.env.PORT || 5000;
