@@ -8,16 +8,19 @@ const cors     = require('cors');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 
 // Controller / route dosyalarını yükle
  const userRoutes   = require('./routes/userRoutes');
- const authRoutes   = require('./routes/authRoutes');
-const courseRoutes = require('./routes/courseRoutes');
-const qaRoutes     = require('./routes/qaRoutes');
+  const authRoutes   = require('./routes/authRoutes');
+ const courseRoutes = require('./routes/courseRoutes');
+ const qaRoutes     = require('./routes/qaRoutes');
 
-const { errorHandler } = require('./middleware/errorMiddleware');
+ const { errorHandler } = require('./middleware/errorMiddleware');
 
 // MongoDB bağlantısı
 mongoose.connect(process.env.MONGO_URI)
