@@ -4,12 +4,10 @@
   "description": "Helpful website for computer engineering students",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
+  "frontend": "cd frontend && npm run dev",
+  "backend": "cd backend && npm run dev",
+  "dev": "echo \"Please run npm run frontend or npm run backend separately\""
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Emirsafa34/student-platform.git"
