@@ -1,9 +1,14 @@
 // src/services/authService.js
 import api from './api';
 
-// backend’de /api/auth/register ve /api/auth/login oldu
-export const register = (payload) =>
-  api.post('/auth/register', payload).then(res => res.data);
+// Kayıt olma
+export function register(payload) {
+  // backend artık /api/auth/register
+  return api.post('/auth/register', payload).then(res => res.data);
+}
 
-export const login = (payload) =>
-  api.post('/auth/login',    payload).then(res => res.data);
+// Giriş yapma
+export function login(payload) {
+  // backend artık /api/auth/login
+  return api.post('/auth/login', payload).then(res => res.data);
+}

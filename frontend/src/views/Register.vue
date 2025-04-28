@@ -6,7 +6,7 @@
     <form @submit.prevent="handleRegister">
       <div>
         <label>İsim:</label>
-        <input v-model="name" type="text" required />
+        <input v-model="username" type="text" required />
       </div>
       <div>
         <label>Email:</label>
@@ -40,7 +40,7 @@ import { register } from '../services/authService';
 const router    = useRouter();
 const authStore = useAuthStore();
 
-const name     = ref('');
+const username     = ref('');
 const email    = ref('');
 const password = ref('');
 const role     = ref('user');
@@ -52,7 +52,7 @@ const handleRegister = async () => {
   error.value   = '';
   try {
     const { token, user } = await register({
-      name:     name.value,
+      username:     username.value,
       email:    email.value,
       password: password.value,
       role:     role.value
