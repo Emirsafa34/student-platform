@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Navbar />
     <div class="dashboard-container">
       <h2>Hoş geldiniz!</h2>
       <p>Rolünüz: {{ user.role || 'Bilinmiyor' }}</p>
@@ -29,7 +28,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import Navbar from '../components/Navbar.vue';
 import { fetchCourses } from '../services/courseService';
 
 // LocalStorage'dan alınan rol

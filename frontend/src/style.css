@@ -1,79 +1,239 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* style.css */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* ==============================
+   CSS Variables & Color Schemes
+   ============================== */
+   :root {
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --color-bg: #f9fafb;
+    --color-text: #111827;
+    --color-primary: #4f46e5;
+    --color-primary-hover: #4338ca;
+    --color-muted: #6b7280;
+    --color-card-bg: #ffffff;
+    --color-border: #e5e7eb;
+    --spacing: 1rem;
+    --radius: 0.375rem;
+    --transition-fast: 0.2s ease-in-out;
+    --navbar-height: 3.5rem;
   }
-  a:hover {
-    color: #747bff;
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: #1f2937;
+      --color-text: #f3f4f6;
+      --color-primary: #6366f1;
+      --color-primary-hover: #4f46e5;
+      --color-muted: #9ca3af;
+      --color-card-bg: #374151;
+      --color-border: #4b5563;
+    }
   }
+  
+  /* ======================
+     Global Reset & Layout
+     ====================== */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+  
+  #app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  
+  /* ===================
+     Navbar Styling
+     =================== */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--navbar-height);
+    background-color: var(--color-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 var(--spacing);
+    z-index: 100;
+  }
+  
+  .navbar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+  }
+  
+  .navbar a:hover {
+    color: var(--color-bg);
+  }
+  
+  .navbar button {
+    background-color: #ef4444;
+    border: none;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+  
+  .navbar button:hover {
+    background-color: #dc2626;
+  }
+  
+  /* ========================
+     Main Content Container
+     ======================== */
+  .main-content {
+    margin-top: var(--navbar-height);
+    flex: 1;
+    padding: var(--spacing);
+    max-width: 960px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--color-card-bg);
+  }
+  
+  /* ===================
+     Card Component
+     =================== */
+  .card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--spacing);
+    margin-bottom: var(--spacing);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  /* =========================
+     Button / Form Elements
+     ========================= */
   button {
-    background-color: #f9f9f9;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
   }
-}
+  
+  button:hover {
+    background-color: var(--color-primary-hover);
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    margin-bottom: var(--spacing);
+    background-color: var(--color-card-bg);
+    color: var(--color-text);
+    transition: border-color var(--transition-fast);
+  }
+  
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+  
+  /* ====================
+     Lists & Typography
+     ==================== */
+  h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+  
+  p {
+    margin-bottom: var(--spacing);
+    line-height: 1.6;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  /* =====================
+     Courses & Q&A Pages
+     ===================== */
+  .courses-container,
+  .qa-container {
+    margin-top: var(--spacing);
+  }
+  
+  .course-item,
+  .qa-container .card {
+    position: relative;
+  }
+  
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .btn-delete,
+  .btn-delete-answer {
+    background: transparent;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: color var(--transition-fast);
+  }
+  
+  .btn-delete:hover,
+  .btn-delete-answer:hover {
+    color: #b91c1c;
+  }
+  
+  /* =====================
+     Responsive Adjustments
+     ===================== */
+  @media (max-width: 600px) {
+    .navbar {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .main-content {
+      padding: 0.5rem;
+      margin-top: calc(var(--navbar-height) + 0.5rem);
+    }
+  }
+  

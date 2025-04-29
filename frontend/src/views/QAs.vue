@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Navbar />
     <div class="qa-container">
       <h2>Soru-Cevap</h2>
 
@@ -78,7 +77,6 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
-import Navbar from '../components/Navbar.vue';
 import {
   fetchQAs,
   addQuestion,

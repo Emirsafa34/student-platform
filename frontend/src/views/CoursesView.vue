@@ -1,7 +1,5 @@
 <template>
   <div>
-    <Navbar />
-
     <div class="courses-view-container">
       <h2>Dersler</h2>
 
@@ -83,7 +81,6 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
-import Navbar from '../components/Navbar.vue';
 import {
   fetchCourses,
   createCourse,
