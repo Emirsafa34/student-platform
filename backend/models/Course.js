@@ -1,33 +1,33 @@
 // backend/models/Course.js
-
 const mongoose = require('mongoose');
 
 const CourseSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, 'Ders başlığı zorunlu'],
       trim: true,
     },
     description: {
       type: String,
+      required: [true, 'Ders açıklaması zorunlu'],
       trim: true,
     },
     thumbnailUrl: {
       type: String,
-      trim: true,
+      trim: true,   // opsiyonel
     },
     pdfUrl: {
       type: String,
-      trim: true,
+      trim: true,   // opsiyonel
     },
     youtubePlaylist: {
       type: String,
-      trim: true,
+      trim: true,   // opsiyonel
     },
     gradingPolicy: {
       type: String,
-      trim: true,
+      trim: true,   // opsiyonel
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

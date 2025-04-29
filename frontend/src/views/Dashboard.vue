@@ -16,12 +16,11 @@
         <p v-if="!courses.length">Kurslar yükleniyor veya bulunamadı...</p>
       </section>
 
-      <!-- User rolündeki kullanıcılar için Soru-Cevap yönlendirmesi -->
+      <!-- User rolündekiler için -->
       <section v-else>
         <p>
           Ders yönetimi size kapalı. Sorularınızı ve cevaplarınızı görmek ve eklemek için
-          <router-link to="/qas">Soru-Cevap</router-link>
-          sekmesini kullanabilirsiniz.
+          <router-link to="/qas">Soru-Cevap</router-link> sekmesini kullanabilirsiniz.
         </p>
       </section>
     </div>
@@ -31,21 +30,22 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue';
-import api from '../services/api';
+import { fetchCourses } from '../services/courseService';
 
-// Kullanıcı bilgisi localStorage'dan alınır
+// LocalStorage'dan alınan rol
 const user = {
   role: localStorage.getItem('role')
 };
+
 const courses = ref([]);
 
 onMounted(async () => {
   if (user.role === 'admin') {
     try {
-      const res = await api.get('/api/courses', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      courses.value = res.data.courses || res.data;
+      // artk baseURL + '/courses' çağrılıyor
+      const res = await fetchCourses();
+      // fetchCourses servisiniz { courses, ... } veya doğrudan dizi dönebilir
+      courses.value = res.courses || res;
     } catch (err) {
       console.error('Kursları yüklerken hata:', err);
     }

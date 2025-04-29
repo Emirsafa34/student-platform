@@ -1,24 +1,27 @@
 <template>
   <nav class="navbar">
-    <router-link to="/dashboard">Anasayfa</router-link>
-    <router-link v-if="role === 'admin'" to="/courses">Dersler</router-link>
-    <router-link to="/qas">Soru-Cevap</router-link>
-    <button @click="logout">Çıkış</button>
+    <!-- Sadece giriş yapmış kullanıcılar görebilsin -->
+    <router-link v-if="isLoggedIn" to="/dashboard">Anasayfa</router-link>
+    <router-link v-if="isLoggedIn" to="/courses">Dersler</router-link>
+    <router-link v-if="isLoggedIn" to="/qas">Soru-Cevap</router-link>
+    <button v-if="isLoggedIn" @click="logout">Çıkış</button>
   </nav>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
 
 const router = useRouter();
-const role = ref(localStorage.getItem('role'));
 
-const logout = () => {
+// Giriş yapılmış mı kontrolü
+const isLoggedIn = computed(() => !!localStorage.getItem('token'));
+
+function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('role');
   router.push('/login');
-};
+}
 </script>
 
 <style scoped>

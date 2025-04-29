@@ -2,9 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-
 const qaController = require('../controllers/qaController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // Tüm QA listesi (cevaplar dahil)
 router.get('/', qaController.getAllQA);
@@ -14,6 +13,9 @@ router.post('/', protect, qaController.createQA);
 
 // Belirli bir soruya cevap ekle (user & admin)
 router.post('/:id/answers', protect, qaController.addAnswer);
+
+// Cevap sil (sadece admin)
+router.delete('/:qId/answers/:ansId', protect, adminOnly, qaController.deleteAnswer);
 
 // QA güncelle (sadece oluşturan veya admin)
 router.put('/:id', protect, qaController.updateQA);

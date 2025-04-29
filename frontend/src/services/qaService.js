@@ -13,7 +13,7 @@ export function fetchQAs() {
 
 // Yeni soru ekle
 export function addQuestion(payload) {
-  // payload: { question: string, course?: string }
+  // payload: { question: string }
   return api.post('/qas', payload)
     .then(res => res.data.qa);
 }
@@ -27,7 +27,7 @@ export function addAnswer(questionId, payload) {
 
 // Soru güncelle
 export function updateQA(questionId, payload) {
-  // payload: { question?: string, course?: string, isDeleted?: boolean }
+  // payload: { question?: string, isDeleted?: boolean }
   return api.put(`/qas/${questionId}`, payload)
     .then(res => res.data.qa);
 }
@@ -36,4 +36,11 @@ export function updateQA(questionId, payload) {
 export function deleteQA(questionId) {
   return api.delete(`/qas/${questionId}`)
     .then(res => res.data.message);
+}
+export { deleteQA as deleteQuestion };
+
+// Cevap silme
+export function deleteAnswer(questionId, answerId) {
+  return api.delete(`/qas/${questionId}/answers/${answerId}`)
+    .then(res => res.data.qa);
 }

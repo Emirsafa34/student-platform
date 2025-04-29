@@ -37,40 +37,51 @@ exports.addAnswer = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Soru bulunamadı');
   }
-  qa.answers.push({
-    text,
-    createdBy: req.user._id
-  });
+  qa.answers.push({ text, createdBy: req.user._id });
   const updated = await qa.save();
   res.status(201).json({ success: true, qa: updated });
 });
 
-// Güncelleme (sadece admin ya da oluşturan user)
+// Soru güncelle (sadece oluşturan veya admin)
 exports.updateQA = asyncHandler(async (req, res) => {
   const qa = await QA.findById(req.params.id);
   if (!qa || qa.isDeleted) {
-    return res.status(404).json({ success: false, message: 'Bulunamadı' });
+    res.status(404);
+    throw new Error('Soru bulunamadı');
   }
   if (req.user.role !== 'admin' && qa.createdBy.toString() !== req.user._id.toString()) {
-    return res.status(403).json({ success: false, message: 'Yetkiniz yok' });
+    res.status(403);
+    throw new Error('Yetkiniz yok');
   }
-  const { question, isDeleted } = req.body;
-  const updated = await QA.findByIdAndUpdate(
-    req.params.id,
-    { question, isDeleted },
-    { new: true }
-  );
+  const { question } = req.body;
+  if (question) qa.question = question;
+  const updated = await qa.save();
   res.status(200).json({ success: true, qa: updated });
 });
 
-// Soft delete (sadece admin veya soruyu oluşturan user)
+// Cevap silme (sadece admin)
+exports.deleteAnswer = asyncHandler(async (req, res) => {
+  const { qId, ansId } = req.params;
+  const qa = await QA.findById(qId);
+  if (!qa || qa.isDeleted) {
+    res.status(404);
+    throw new Error('Soru bulunamadı');
+  }
+  qa.answers = qa.answers.filter(ans => ans._id.toString() !== ansId);
+  const updated = await qa.save();
+  res.status(200).json({ success: true, qa: updated });
+});
+
+// Soft delete soru (sadece admin veya oluşturan user)
 exports.deleteQA = asyncHandler(async (req, res) => {
   const qa = await QA.findById(req.params.id);
   if (!qa) {
-    return res.status(404).json({ success: false, message: 'Soru bulunamadı.' });
+    res.status(404);
+    throw new Error('Soru bulunamadı');
   }
   if (qa.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-    return res.status(403).json({ success: false, message: 'Bu işlemi yapmaya yetkiniz yok.' });
+    res.status(403);
+    throw new Error('Bu işlemi yapmaya yetkiniz yok');
   }
   qa.isDeleted = true;
   await qa.save();
