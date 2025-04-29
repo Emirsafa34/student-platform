@@ -4,10 +4,10 @@
   "description": "Helpful website for computer engineering students",
   "main": "index.js",
   "scripts": {
-  "frontend": "cd frontend && npm run dev",
-  "backend": "cd backend && npm run dev",
-  "dev": "echo \"Please run npm run frontend or npm run backend separately\""
-},
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && npm run dev",
+    "dev": "echo \"Please run npm run frontend or npm run backend separately\""
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Emirsafa34/student-platform.git"
@@ -30,6 +30,10 @@
     "pinia": "^3.0.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3"
   }
 }

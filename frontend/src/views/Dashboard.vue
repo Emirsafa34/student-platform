@@ -3,43 +3,52 @@
     <Navbar />
     <div class="dashboard-container">
       <h2>Hoş geldiniz!</h2>
-      <p>Rolünüz: {{ role || 'Bilinmiyor' }}</p>
+      <p>Rolünüz: {{ user.role || 'Bilinmiyor' }}</p>
 
-      <section v-if="courses.length">
+      <!-- Admin kullanıcılar için kurslar -->
+      <section v-if="user.role === 'admin'">
         <h3>Kurslar</h3>
         <ul>
-          <li v-for="course in courses" :key="course.id">
+          <li v-for="course in courses" :key="course._id">
             {{ course.title }}
           </li>
         </ul>
+        <p v-if="!courses.length">Kurslar yükleniyor veya bulunamadı...</p>
       </section>
 
+      <!-- User rolündeki kullanıcılar için Soru-Cevap yönlendirmesi -->
       <section v-else>
-        <p>Kurslar yükleniyor veya bulunamadı...</p>
+        <p>
+          Ders yönetimi size kapalı. Sorularınızı ve cevaplarınızı görmek ve eklemek için
+          <router-link to="/qas">Soru-Cevap</router-link>
+          sekmesini kullanabilirsiniz.
+        </p>
       </section>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue';
-import api from '../services/api';      // ← göreli yol
-import { useAuthStore } from '../stores/auth';  // ← göreli yol
+import api from '../services/api';
 
-const authStore = useAuthStore();
-const role     = ref('');
-const courses  = ref([]);
+// Kullanıcı bilgisi localStorage'dan alınır
+const user = {
+  role: localStorage.getItem('role')
+};
+const courses = ref([]);
 
 onMounted(async () => {
-  role.value = authStore.user?.role || '';
-
-  try {
-    const res = await api.get('/courses');
-    courses.value = res.data;
-    console.log('✅ /courses cevabı:', courses.value);
-  } catch (err) {
-    console.error('❌ /courses hatası:', err);
+  if (user.role === 'admin') {
+    try {
+      const res = await api.get('/api/courses', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      courses.value = res.data.courses || res.data;
+    } catch (err) {
+      console.error('Kursları yüklerken hata:', err);
+    }
   }
 });
 </script>

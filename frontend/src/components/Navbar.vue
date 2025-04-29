@@ -1,9 +1,7 @@
-// src/components/Navbar.vue
-
 <template>
   <nav class="navbar">
     <router-link to="/dashboard">Anasayfa</router-link>
-    <router-link to="/courses">Dersler</router-link>
+    <router-link v-if="role === 'admin'" to="/courses">Dersler</router-link>
     <router-link to="/qas">Soru-Cevap</router-link>
     <button @click="logout">Çıkış</button>
   </nav>
@@ -11,8 +9,10 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 
 const router = useRouter();
+const role = ref(localStorage.getItem('role'));
 
 const logout = () => {
   localStorage.removeItem('token');
