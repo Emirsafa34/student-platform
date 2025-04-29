@@ -1,14 +1,14 @@
 // controllers/authController.js
 require('dotenv').config();
-const jwt             = require('jsonwebtoken');
-const bcrypt          = require('bcrypt');
+const jwt              = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
-const User            = require('../models/User');
+const User             = require('../models/User');
 
 const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 
 // Helper: JWT üretir
-const generateToken = (id) => jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+const generateToken = (id) =>
+  jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
 exports.register = async (req, res, next) => {
   // 1) validationResult
@@ -27,11 +27,11 @@ exports.register = async (req, res, next) => {
       return res.status(409).json({ message: 'Bu e-posta zaten kayıtlı.' });
     }
 
-    // 4) şifre hashle
-    const hashed = await bcrypt.hash(password, 12);
+    // --- 4) Şifreyi controller’da hash’lemeyi kaldırdık ---
+    // UserSchema.pre('save') hook’u tek seferde hash’leyecek
 
     // 5) kullanıcı oluştur
-    const user = new User({ username, email, password: hashed, role });
+    const user = new User({ username, email, password, role });
     await user.save();
 
     // 6) token üret
@@ -70,8 +70,8 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ message: 'Geçersiz kimlik bilgisi.' });
     }
 
-    // 4) şifreyi karşılaştır
-    const match = await bcrypt.compare(password, user.password);
+    // 4) modelde tanımlı comparePassword metodunu kullan
+    const match = await user.comparePassword(password);
     if (!match) {
       return res.status(401).json({ message: 'Geçersiz kimlik bilgisi.' });
     }

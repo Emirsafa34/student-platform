@@ -10,7 +10,11 @@
         <label>Şifre:</label>
         <input v-model="password" type="password" required />
       </div>
-      <button type="submit" :disabled="loading">
+      <button
+        type="submit"
+        :disabled="loading"
+        @click="console.log('🔘 Butona tıklandı', { loading: loading })"
+      >
         {{ loading ? 'Bekleyin...' : 'Giriş Yap' }}
       </button>
       <p v-if="error" class="error">{{ error }}</p>
@@ -33,6 +37,11 @@ const loading   = ref(false);
 const error     = ref('');
 
 const handleLogin = async () => {
+  console.log('🚀 handleLogin tetiklendi', {
+    email: email.value,
+    password: password.value
+  });
+
   loading.value = true;
   error.value   = '';
   try {
@@ -40,6 +49,7 @@ const handleLogin = async () => {
       email:    email.value,
       password: password.value
     });
+    console.log('✅ login başarılı, backend cevabı:', { token, user });
 
     authStore.user  = user;
     authStore.token = token;
@@ -51,9 +61,11 @@ const handleLogin = async () => {
       router.push('/qas');
     }
   } catch (err) {
+    console.error('❌ login hatası:', err);
     error.value = err.message || 'Giriş başarısız. Bilgileri kontrol edin.';
   } finally {
     loading.value = false;
+    console.log('🏁 handleLogin tamamlandı, loading:', loading.value);
   }
 };
 </script>
