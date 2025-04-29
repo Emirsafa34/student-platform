@@ -1,20 +1,24 @@
-// src/views/Courses.vue
-
 <template>
   <div>
     <Navbar />
     <div class="courses-container">
       <h2>Dersler</h2>
-      <div v-if="role === 'admin'">
+      <!-- (Geçici debug; kaldırabilirsiniz) -->
+      <p style="color: red">isAdmin = {{ isAdmin }}</p>
+
+      <!-- Adminler için yeni ders ekleme formu -->
+      <div v-if="isAdmin">
         <button @click="toggleAddForm">Yeni Ders Ekle</button>
         <div v-if="showAddForm" class="form">
-          <input v-model="title" placeholder="Ders Adı" />
+          <input v-model="title" placeholder="Ders Adı" required />
           <input v-model="description" placeholder="Açıklama" />
-          <button @click="addCourse">Ekle</button>
+          <button @click="addCourse" :disabled="!title">Ekle</button>
         </div>
       </div>
+
+      <!-- Ders listesi -->
       <ul>
-        <li v-for="course in courses" :key="course._id">
+        <li v-for="course in courses" :key="course._id" class="course-item">
           <strong>{{ course.title }}</strong>: {{ course.description }}
         </li>
       </ul>
@@ -23,19 +27,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref, computed, onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue';
+import { fetchCourses, createCourse } from '../services/courseService';
 
-const courses = ref([]);
-const title = ref('');
+// Her render’da güncel rolü okuyalım:
+const isAdmin = computed(() => localStorage.getItem('role') === 'admin');
+
+const courses     = ref([]);
+const title       = ref('');
 const description = ref('');
 const showAddForm = ref(false);
-const role = localStorage.getItem('role');
 
-const fetchCourses = async () => {
-  const res = await axios.get('http://localhost:5000/api/courses');
-  courses.value = res.data;
+const loadCourses = async () => {
+  try {
+    courses.value = await fetchCourses();
+  } catch (err) {
+    console.error('Dersler yüklenirken hata:', err);
+  }
 };
 
 const toggleAddForm = () => {
@@ -43,21 +52,19 @@ const toggleAddForm = () => {
 };
 
 const addCourse = async () => {
-  await axios.post('http://localhost:5000/api/courses', {
-    title: title.value,
-    description: description.value,
-  }, {
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-  });
-  title.value = '';
-  description.value = '';
-  showAddForm.value = false;
-  fetchCourses();
+  if (!isAdmin.value) return;
+  try {
+    await createCourse({ title: title.value, description: description.value });
+    title.value = '';
+    description.value = '';
+    showAddForm.value = false;
+    loadCourses();
+  } catch (err) {
+    console.error('Ders ekleme hatası:', err);
+  }
 };
 
-onMounted(() => {
-  fetchCourses();
-});
+onMounted(loadCourses);
 </script>
 
 <style scoped>
@@ -72,5 +79,18 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+.course-item {
+  margin: 8px 0;
+}
+button {
+  cursor: pointer;
+}
+input {
+  padding: 6px;
 }
 </style>

@@ -3,7 +3,8 @@ import axios from 'axios';
 
 // API temel axios instance'ı
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  // Artık /api eklemeden sadece sunucu adresini kullanıyoruz
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
   timeout: 10000,
 });
 
@@ -12,6 +13,8 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
+      // headers objesi mutlaka mevcut
+      config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -27,6 +30,7 @@ api.interceptors.response.use(
       // Token süresi dolduysa login sayfasına yönlendir
       if (error.response.status === 401) {
         localStorage.removeItem('token');
+        localStorage.removeItem('role');
         window.location.href = '/login';
       }
       // Diğer genel hataları yakala
@@ -38,7 +42,7 @@ api.interceptors.response.use(
 
 export default api;
 
-// örnek: src/services/authService.js
+// Örnek servis: src/services/authService.js
 // import api from './api';
-// export const register = (payload) => api.post('/auth/register', payload);
-// export const login = (payload) => api.post('/auth/login', payload);
+// export const register = (payload) => api.post('/api/auth/register', payload);
+// export const login    = (payload) => api.post('/api/auth/login',    payload);

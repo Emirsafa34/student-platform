@@ -10,11 +10,7 @@
         <label>Şifre:</label>
         <input v-model="password" type="password" required />
       </div>
-      <button
-        type="submit"
-        :disabled="loading"
-        @click="console.log('🔘 Butona tıklandı', { loading: loading })"
-      >
+      <button type="submit" :disabled="loading">
         {{ loading ? 'Bekleyin...' : 'Giriş Yap' }}
       </button>
       <p v-if="error" class="error">{{ error }}</p>
@@ -31,30 +27,25 @@ import { login } from '../services/authService';
 const router    = useRouter();
 const authStore = useAuthStore();
 
-const email     = ref('');
-const password  = ref('');
-const loading   = ref(false);
-const error     = ref('');
+const email    = ref('');
+const password = ref('');
+const loading  = ref(false);
+const error    = ref('');
 
 const handleLogin = async () => {
-  console.log('🚀 handleLogin tetiklendi', {
-    email: email.value,
-    password: password.value
-  });
-
   loading.value = true;
   error.value   = '';
   try {
-    const { token, user } = await login({
-      email:    email.value,
-      password: password.value
-    });
-    console.log('✅ login başarılı, backend cevabı:', { token, user });
+    const { token, user } = await login({ email: email.value, password: password.value });
 
+    // Store user & token
     authStore.user  = user;
     authStore.token = token;
     localStorage.setItem('token', token);
+    localStorage.setItem('role', user.role);
+    console.log('🛠️ role kaydedildi =', localStorage.getItem('role'));
 
+    // Redirect based on role
     if (user.role === 'admin') {
       router.push('/dashboard');
     } else {
@@ -65,7 +56,6 @@ const handleLogin = async () => {
     error.value = err.message || 'Giriş başarısız. Bilgileri kontrol edin.';
   } finally {
     loading.value = false;
-    console.log('🏁 handleLogin tamamlandı, loading:', loading.value);
   }
 };
 </script>
