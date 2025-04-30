@@ -13,6 +13,12 @@ const CourseSchema = new mongoose.Schema(
       required: [true, 'Ders açıklaması zorunlu'],
       trim: true,
     },
+    // Buraya grade alanını ekliyoruz:
+    grade: {
+      type: Number,
+      required: [true, 'Sınıf bilgisi zorunlu'],
+      enum: [1, 2, 3, 4]
+    },
     thumbnailUrl: {
       type: String,
       trim: true,   // opsiyonel

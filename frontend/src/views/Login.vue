@@ -42,6 +42,7 @@ const handleLogin = async () => {
     authStore.user  = user;
     authStore.token = token;
     localStorage.setItem('token', token);
+    localStorage.setItem('username', user.username);
     localStorage.setItem('role', user.role);
     console.log('🛠️ role kaydedildi =', localStorage.getItem('role'));
 

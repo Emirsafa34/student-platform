@@ -11,48 +11,22 @@
 import Navbar from './components/Navbar.vue';
 </script>
 
-<style>
-/* --- Reset & Temel Ayarlar --- */
-* {
-  box-sizing: border-box;
-}
-html, body, #app {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #f5f5f5;   /* sayfa arka planı */
-  color: #333;            /* metin rengi */
-  font-family: Arial, sans-serif;
+<style scoped>
+/* #app tüm sayfayı kapsasın ve CSS Variable’ları kullansın */
+#app {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
 }
 
-/* --- Navbar Sabitleme --- */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-/* --- Ana İçerik --- */
+/* main-content artık beyaz sabit arka plan tanımlamıyor;
+   boşluk ve üst marj CSS Variable’larla sağlanıyor */
 .main-content {
-  margin-top: 60px;       /* navbar yüksekliği kadar boşluk */
-  padding: 20px;
-  min-height: calc(100vh - 60px);
+  margin-top: var(--navbar-height);
+  padding: var(--spacing);
+  flex: 1;
   overflow-y: auto;
-  background: #ffffff;    /* içerik kutusu arka planı */
-}
-
-/* --- Link & Başlık Stilleri --- */
-a {
-  color: #2c3e50;
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-h1, h2, h3, h4, h5 {
-  color: #2c3e50;
-  margin-bottom: 0.5em;
 }
 </style>
