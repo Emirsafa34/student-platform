@@ -1,11 +1,18 @@
 <template>
-  <nav class="navbar">
-    <router-link v-if="isLoggedIn && !isAuthPage" to="/dashboard">Anasayfa</router-link>
-    <router-link v-if="isLoggedIn && !isAuthPage" to="/courses">Dersler</router-link>
-    <router-link v-if="isLoggedIn && !isAuthPage" to="/qas">Soru-Cevap</router-link>
-
-    <div v-if="isLoggedIn && !isAuthPage" class="user-section">
-      <span class="username">👤 {{ username }}</span>
+  <nav v-if="!isAuthPage" class="navbar">
+    <div class="navbar-left">
+      <img class="logo" src="https://cdn-icons-png.flaticon.com/512/1055/1055644.png" alt="Logo" />
+      <span class="site-name">Ceng Rehber</span>
+    </div>
+    <div class="navbar-center">
+      <router-link to="/dashboard">Anasayfa</router-link>
+      <span class="divider">|</span>
+      <router-link to="/courses">Dersler</router-link>
+      <span class="divider">|</span>
+      <router-link to="/qas">Soru-Cevap</router-link>
+    </div>
+    <div class="navbar-right" v-if="isLoggedIn">
+      <span class="user-info">👤 {{ username }}</span>
       <button @click="logout">Çıkış</button>
     </div>
   </nav>
@@ -16,11 +23,15 @@ import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
-const route  = useRoute();
+const route = useRoute();
 
 const isLoggedIn = computed(() => !!localStorage.getItem('token'));
-const isAuthPage = computed(() => ['/login','/register'].includes(route.path));
-const username   = computed(() => localStorage.getItem('username') || '');
+const username = computed(() => localStorage.getItem('username') || 'Kullanıcı');
+
+// Login veya Register sayfasında mıyız?
+const isAuthPage = computed(() =>
+  route.path === '/login' || route.path === '/register'
+);
 
 function logout() {
   localStorage.clear();
@@ -33,27 +44,59 @@ function logout() {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #4f46e5;
+  color: white;
   padding: 0.75rem 1rem;
-  background: var(--color-primary);
+  flex-wrap: wrap;
 }
-.user-section {
+.navbar-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-.username {
-  color: #fff;
-  font-weight: 500;
+.logo {
+  width: 32px;
+  height: 32px;
 }
-.navbar a, .navbar button {
-  color: #fff;
+.site-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.divider {
+  color: #ccc;
+}
+.navbar a {
+  color: white;
   text-decoration: none;
 }
-.navbar button {
-  background: #ef4444;
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.user-info {
+  font-weight: bold;
+}
+button {
+  background-color: #ef4444;
+  color: white;
   border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius);
+  padding: 6px 12px;
+  border-radius: 4px;
   cursor: pointer;
+}
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .navbar-center {
+    flex-wrap: wrap;
+  }
 }
 </style>
