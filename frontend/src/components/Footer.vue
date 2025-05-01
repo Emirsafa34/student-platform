@@ -3,8 +3,8 @@
       <div class="footer-container container">
         <div class="footer-box">
           <p class="footer-label">Her türlü soru ve öneriniz için:</p>
-          <a class="footer-mail" href="mailto:info@seninsiten.com">
-            info@seninsiten.com
+          <a class="footer-mail" href="mailto:esafac34@gmail.com">
+            esafac34@gmail.com
           </a>
         </div>
         <div class="footer-box">

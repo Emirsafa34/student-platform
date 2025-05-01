@@ -10,13 +10,19 @@
           <option disabled value="">— Sınıf Seçin —</option>
           <option v-for="g in grades" :key="g" :value="g">{{ g }}. Sınıf</option>
         </select>
+        <!-- ✅ Dönem Seçimi -->
+        <select v-model="form.term" required>
+          <option disabled value="">— Dönem Seçin —</option>
+          <option value="güz">Güz</option>
+          <option value="bahar">Bahar</option>
+        </select>
         <input v-model="form.thumbnailUrl" placeholder="Resim URL (opsiyonel)" />
         <input v-model="form.pdfUrl" placeholder="PDF URL (opsiyonel)" />
         <input v-model="form.youtubePlaylist" placeholder="YouTube URL (opsiyonel)" />
         <div class="form-buttons">
           <button
             @click="saveCourse"
-            :disabled="!form.title.trim() || !form.description.trim() || !form.grade"
+            :disabled="!form.title.trim() || !form.description.trim() || !form.grade || !form.term"
           >
             Kaydet
           </button>
@@ -97,8 +103,13 @@ const selectedCourse = ref(null);
 const showForm = ref(false);
 const editingId = ref(null);
 const form = ref({
-  title: '', description: '', grade: null,
-  thumbnailUrl: '', pdfUrl: '', youtubePlaylist: ''
+  title: '',
+  description: '',
+  grade: null,
+  term: '', // ✅ Eklendi
+  thumbnailUrl: '',
+  pdfUrl: '',
+  youtubePlaylist: ''
 });
 
 async function load() {
@@ -111,8 +122,8 @@ const coursesByGrade = g => courses.value.filter(c => Number(c.grade) === g);
 const arrayify = x => Array.isArray(x) ? x : [x];
 const fileName = url => url.split('/').pop();
 const embedUrl = url => {
-  const m = url.match(/(?:v=|\.be\/)([^&]+)/);
-  return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+const m = url.match(/(?:v=|\.be\/|embed\/)([^&?]+)/);
+return m ? `https://www.youtube.com/embed/${m[1]}` : url;
 };
 
 function selectCourse(c) {
@@ -125,8 +136,13 @@ function openForm() {
     Object.assign(form.value, selectedCourse.value);
   } else {
     Object.assign(form.value, {
-      title: '', description: '', grade: null,
-      thumbnailUrl: '', pdfUrl: '', youtubePlaylist: ''
+      title: '',
+      description: '',
+      grade: null,
+      term: '',
+      thumbnailUrl: '',
+      pdfUrl: '',
+      youtubePlaylist: ''
     });
   }
 }

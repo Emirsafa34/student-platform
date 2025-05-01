@@ -1,5 +1,3 @@
-// backend/controllers/courseController.js
-
 const Course = require('../models/Course');
 
 // Create a new course (admin only)
@@ -34,7 +32,8 @@ exports.updateCourse = async (req, res, next) => {
       { ...req.body },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
+    if (!updated)
+      return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
     res.status(200).json({ success: true, course: updated });
   } catch (err) {
     next(err);
@@ -45,7 +44,8 @@ exports.updateCourse = async (req, res, next) => {
 exports.deleteCourse = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);
-    if (!course) return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
+    if (!course)
+      return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
 
     await Course.findByIdAndUpdate(req.params.id, { isDeleted: true });
     res.status(200).json({ success: true, message: 'Ders başarıyla silindi (soft delete).' });

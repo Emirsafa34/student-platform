@@ -13,27 +13,36 @@ const CourseSchema = new mongoose.Schema(
       required: [true, 'Ders açıklaması zorunlu'],
       trim: true,
     },
-    // Buraya grade alanını ekliyoruz:
     grade: {
       type: Number,
       required: [true, 'Sınıf bilgisi zorunlu'],
       enum: [1, 2, 3, 4]
     },
+    
+    // ✅ Yeni alan: Güz / Bahar dönemi
+    term: {
+      type: String,
+      required: [true, 'Dönem bilgisi zorunlu'],
+      enum: ['güz', 'bahar'],
+      lowercase: true,
+      trim: true
+    },
+
     thumbnailUrl: {
       type: String,
-      trim: true,   // opsiyonel
+      trim: true,
     },
     pdfUrl: {
       type: String,
-      trim: true,   // opsiyonel
+      trim: true,
     },
     youtubePlaylist: {
       type: String,
-      trim: true,   // opsiyonel
+      trim: true,
     },
     gradingPolicy: {
       type: String,
-      trim: true,   // opsiyonel
+      trim: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
