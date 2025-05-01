@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Navbar />
+    <!-- Navbar'ı sadece login ve register sayfaları dışında göster -->
+    <Navbar v-if="showNavbar" />
+
     <main class="main-content">
       <router-view />
     </main>
@@ -8,25 +10,18 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import Navbar from './components/Navbar.vue';
+
+const route = useRoute();
+
+// Login ve Register sayfalarında navbar gizli olsun
+const showNavbar = computed(() =>
+  !['/login', '/register'].includes(route.path)
+);
 </script>
 
-<style scoped>
-/* #app tüm sayfayı kapsasın ve CSS Variable’ları kullansın */
-#app {
-  min-height: 100vh;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  display: flex;
-  flex-direction: column;
-}
-
-/* main-content artık beyaz sabit arka plan tanımlamıyor;
-   boşluk ve üst marj CSS Variable’larla sağlanıyor */
-.main-content {
-  margin-top: var(--navbar-height);
-  padding: var(--spacing);
-  flex: 1;
-  overflow-y: auto;
-}
+<style>
+/* Global reset, layout vs. hepsi style.css’e taşındı */
 </style>

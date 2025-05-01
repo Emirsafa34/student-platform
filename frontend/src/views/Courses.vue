@@ -14,44 +14,62 @@
         <input v-model="form.pdfUrl" placeholder="PDF URL (opsiyonel)" />
         <input v-model="form.youtubePlaylist" placeholder="YouTube URL (opsiyonel)" />
         <div class="form-buttons">
-          <button @click="saveCourse" :disabled="!form.title.trim() || !form.description.trim() || !form.grade">Kaydet</button>
+          <button
+            @click="saveCourse"
+            :disabled="!form.title.trim() || !form.description.trim() || !form.grade"
+          >
+            Kaydet
+          </button>
           <button @click="cancelForm">İptal</button>
         </div>
       </div>
     </div>
 
-    <!-- Ders Detay -->
+    <!-- Ders Detay (Tam Ekran) -->
     <div v-if="selectedCourse" class="course-detail-overlay">
       <button class="back-btn" @click="selectedCourse = null">‹ Geri</button>
       <h3>{{ selectedCourse.title }}</h3>
       <p>{{ selectedCourse.description }}</p>
-      <img v-if="selectedCourse.thumbnailUrl" :src="selectedCourse.thumbnailUrl" alt="Ders Görseli" class="course-image" />
+
+      <img
+        v-if="selectedCourse.thumbnailUrl"
+        :src="selectedCourse.thumbnailUrl"
+        alt="Ders Görseli"
+        class="course-image"
+      />
+
       <div v-if="selectedCourse.pdfUrl">
         <h4>PDF Dokümanlar</h4>
         <ul>
           <li v-for="url in arrayify(selectedCourse.pdfUrl)" :key="url">
-            <a :href="url" target="_blank">{{ fileName(url) }}</a>
+            <a :href="url" target="_blank" rel="noopener">{{ fileName(url) }}</a>
           </li>
         </ul>
       </div>
+
       <div v-if="selectedCourse.youtubePlaylist">
         <h4>Video</h4>
         <div class="video-wrapper">
-          <iframe :src="embedUrl(selectedCourse.youtubePlaylist)" frameborder="0" allowfullscreen></iframe>
+          <iframe
+            :src="embedUrl(selectedCourse.youtubePlaylist)"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
         </div>
       </div>
+
       <div v-if="isAdmin" class="admin-actions">
         <button @click="enterEditMode()">Düzenle</button>
         <button @click="deleteCourse(selectedCourse._id)">Sil</button>
       </div>
     </div>
 
-    <!-- Gruplanmış Paneller -->
+    <!-- Sınıf Bazlı Panel Listesi -->
     <div v-else class="grade-panels">
       <div v-for="grade in grades" :key="grade" class="grade-panel">
         <h3>{{ grade }}. Sınıf</h3>
         <ul>
-          <li v-for="c in coursesByGrade(grade)" :key="c._id">
+          <li v-for="c in coursesByGrade(grade)" :key="c._id" class="course-item">
             <button class="course-btn" @click="selectCourse(c)">
               {{ c.title }}
             </button>
@@ -69,12 +87,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import {
-  fetchCourses,
-  createCourse,
-  updateCourse,
-  removeCourse
-} from '../services/courseService';
+import { fetchCourses, createCourse, updateCourse, removeCourse } from '../services/courseService';
 
 const isAdmin = computed(() => localStorage.getItem('role') === 'admin');
 const grades = [1, 2, 3, 4];
@@ -84,12 +97,8 @@ const selectedCourse = ref(null);
 const showForm = ref(false);
 const editingId = ref(null);
 const form = ref({
-  title: '',
-  description: '',
-  grade: null,
-  thumbnailUrl: '',
-  pdfUrl: '',
-  youtubePlaylist: ''
+  title: '', description: '', grade: null,
+  thumbnailUrl: '', pdfUrl: '', youtubePlaylist: ''
 });
 
 async function load() {
@@ -126,19 +135,17 @@ function cancelForm() {
   editingId.value = null;
 }
 async function saveCourse() {
-  const payload = { ...form.value };
   try {
     if (editingId.value) {
-      await updateCourse(editingId.value, payload);
+      await updateCourse(editingId.value, { ...form.value });
     } else {
-      await createCourse(payload);
+      await createCourse({ ...form.value });
     }
     cancelForm();
     selectedCourse.value = null;
     await load();
   } catch (err) {
-    console.error('Kayıt hatası:', err);
-    alert(err.message || 'Hata oluştu');
+    alert(err.message || 'Kayıt sırasında hata oluştu.');
   }
 }
 function enterEditMode(c) {
@@ -147,10 +154,11 @@ function enterEditMode(c) {
   openForm();
 }
 async function deleteCourse(id) {
-  if (!confirm('Silmek istediğine emin misin?')) return;
-  await removeCourse(id);
-  selectedCourse.value = selectedCourse.value?._id === id ? null : selectedCourse.value;
-  await load();
+  if (confirm('Bu dersi silmek istiyor musunuz?')) {
+    await removeCourse(id);
+    selectedCourse.value = selectedCourse.value?._id === id ? null : selectedCourse.value;
+    await load();
+  }
 }
 </script>
 
@@ -160,16 +168,13 @@ async function deleteCourse(id) {
   padding: var(--spacing);
 }
 
-/* Tam ekran overlay */
+/* Detay sayfası tam ekran */
 .course-detail-overlay {
   position: fixed;
   top: var(--navbar-height);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: calc(100% - var(--navbar-height));
+  left: 0; right: 0; bottom: 0;
   background: var(--color-card-bg);
+  color: var(--color-text);
   padding: var(--spacing);
   overflow-y: auto;
   z-index: 1000;
@@ -191,27 +196,45 @@ async function deleteCourse(id) {
 .video-wrapper {
   position: relative;
   padding-bottom: 56.25%;
-  height: 0;
+  margin-top: var(--spacing);
 }
 .video-wrapper iframe {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   border: 0;
 }
+
+/* Yatay paneller */
 .grade-panels {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: var(--spacing);
+  overflow-x: auto;
+  padding: var(--spacing) 0;
 }
 .grade-panel {
+  flex: 1;
+  min-width: 240px;
+  max-width: 300px;
   background: var(--color-card-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: var(--spacing);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+/* Mobilde wrap ile alt alta */
+@media (max-width: 768px) {
+  .grade-panels {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .grade-panel {
+    min-width: 90%;
+    max-width: 100%;
+  }
+}
+
 .course-btn {
   width: 100%;
   text-align: left;
@@ -231,11 +254,13 @@ async function deleteCourse(id) {
   cursor: pointer;
   margin-left: 0.25rem;
 }
+
 .admin-form {
   margin-bottom: var(--spacing);
 }
 .form > * {
   margin-bottom: var(--spacing);
+  width: 100%;
 }
 .form-buttons {
   display: flex;
