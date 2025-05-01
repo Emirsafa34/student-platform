@@ -1,3 +1,4 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import Register  from '../views/Register.vue';
 import Login     from '../views/Login.vue';
@@ -6,25 +7,22 @@ import Courses   from '../views/Courses.vue';
 import QAs       from '../views/QAs.vue';
 
 const routes = [
-  { path: '/',           redirect: '/login' },
-  { path: '/login',      component: Login },
-  { path: '/register',   component: Register },
-  {
-    path: '/dashboard',
-    component: Dashboard,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/courses',
-    component: Courses,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/qas',
-    component: QAs,
-    meta: { requiresAuth: true }
-  },
-  // { path: '/:catchAll(.*)', redirect: '/login' } // opsiyonel
+  // Ana sayfa (Dashboard) herkese açık
+  { path: '/',         component: Dashboard },
+  // Giriş / Kayıt
+  { path: '/login',    component: Login },
+  { path: '/register', component: Register },
+  // Dashboard kısayolu
+  { path: '/dashboard', redirect: '/' },
+  // Dersler ve Soru-Cevap herkes için açık
+  { path: '/courses',  component: Courses },
+  { path: '/qas',      component: QAs },
+  // İleride korumak istediğin başka sayfalar olursa:
+  // {
+  //   path: '/secret',
+  //   component: SecretPage,
+  //   meta: { requiresAuth: true }
+  // },
 ];
 
 const router = createRouter({
@@ -34,9 +32,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
+
+  // Sadece meta.requiresAuth içeren rotalarda kontrol et
   if (to.meta.requiresAuth && !token) {
     return next('/login');
   }
+
+  // Diğer tüm sayfalarda izin ver
   next();
 });
 

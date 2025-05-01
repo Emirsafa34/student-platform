@@ -1,8 +1,8 @@
 // controllers/authController.js
 require('dotenv').config();
-const jwt              = require('jsonwebtoken');
+const jwt                  = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
-const User             = require('../models/User');
+const User                 = require('../models/User');
 
 const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 
@@ -18,8 +18,8 @@ exports.register = async (req, res, next) => {
   }
 
   try {
-    // 2) body’den username/email/password/role al
-    const { username, email, password, role } = req.body;
+    // 2) body’den sadece username/email/password al
+    const { username, email, password } = req.body;
 
     // 3) kullanıcı zaten var mı?
     const existing = await User.findOne({ email });
@@ -27,17 +27,21 @@ exports.register = async (req, res, next) => {
       return res.status(409).json({ message: 'Bu e-posta zaten kayıtlı.' });
     }
 
-    // --- 4) Şifreyi controller’da hash’lemeyi kaldırdık ---
-    // UserSchema.pre('save') hook’u tek seferde hash’leyecek
+    // 4) Şifre hash işlemi User schema’daki pre hook ile yapılacak
 
-    // 5) kullanıcı oluştur
-    const user = new User({ username, email, password, role });
+    // 5) Kullanıcı oluştur, role sabit 'user'
+    const user = new User({
+      username,
+      email,
+      password,
+      role: 'user'
+    });
     await user.save();
 
     // 6) token üret
     const token = generateToken(user._id);
 
-    // 7) yanıt: hem token hem tam user objesi
+    // 7) yanıt: token + user objesi
     res.status(201).json({
       success: true,
       token,
@@ -70,7 +74,7 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ message: 'Geçersiz kimlik bilgisi.' });
     }
 
-    // 4) modelde tanımlı comparePassword metodunu kullan
+    // 4) şifre kontrolü
     const match = await user.comparePassword(password);
     if (!match) {
       return res.status(401).json({ message: 'Geçersiz kimlik bilgisi.' });

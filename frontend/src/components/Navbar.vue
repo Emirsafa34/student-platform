@@ -1,40 +1,46 @@
 <template>
-  <nav v-if="!isAuthPage" class="navbar">
+  <nav class="navbar">
     <div class="navbar-left">
-      <img class="logo" src="https://cdn-icons-png.flaticon.com/512/1055/1055644.png" alt="Logo" />
+      <router-link to="/">
+        <img
+          class="logo"
+          src="https://cdn-icons-png.flaticon.com/512/1055/1055644.png"
+          alt="Logo"
+        />
+      </router-link>
       <span class="site-name">Ceng Rehber</span>
     </div>
+
     <div class="navbar-center">
-      <router-link to="/dashboard">Anasayfa</router-link>
+      <router-link to="/">Anasayfa</router-link>
       <span class="divider">|</span>
       <router-link to="/courses">Dersler</router-link>
       <span class="divider">|</span>
       <router-link to="/qas">Soru-Cevap</router-link>
     </div>
-    <div class="navbar-right" v-if="isLoggedIn">
-      <span class="user-info">👤 {{ username }}</span>
-      <button @click="logout">Çıkış</button>
+
+    <div class="navbar-right">
+      <template v-if="authStore.isAuthenticated">
+        <span class="user-info">👤 {{ authStore.user.username }}</span>
+        <button @click="logout">Çıkış</button>
+      </template>
+      <template v-else>
+        <router-link to="/login" class="nav-icon" title="Giriş Yap">🔐</router-link>
+        <router-link to="/register" class="nav-icon" title="Kayıt Ol">📝</router-link>
+      </template>
     </div>
   </nav>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
 const router = useRouter();
-const route = useRoute();
-
-const isLoggedIn = computed(() => !!localStorage.getItem('token'));
-const username = computed(() => localStorage.getItem('username') || 'Kullanıcı');
-
-// Login veya Register sayfasında mıyız?
-const isAuthPage = computed(() =>
-  route.path === '/login' || route.path === '/register'
-);
+const authStore = useAuthStore();
 
 function logout() {
-  localStorage.clear();
+  authStore.logout();
   router.push('/login');
 }
 </script>
@@ -49,7 +55,9 @@ function logout() {
   padding: 0.75rem 1rem;
   flex-wrap: wrap;
 }
-.navbar-left {
+.navbar-left,
+.navbar-center,
+.navbar-right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -58,45 +66,18 @@ function logout() {
   width: 32px;
   height: 32px;
 }
-.site-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-.navbar-center {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
 .divider {
-  color: #ccc;
+  margin: 0 0.5rem;
 }
-.navbar a {
-  color: white;
-  text-decoration: none;
-}
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.user-info {
-  font-weight: bold;
+.nav-icon {
+  font-size: 1.2rem;
 }
 button {
-  background-color: #ef4444;
+  background: none;
+  border: 1px solid white;
   color: white;
-  border: none;
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
-}
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .navbar-center {
-    flex-wrap: wrap;
-  }
 }
 </style>
