@@ -1,17 +1,21 @@
-/* src/assets/styles/theme.css */
+/* src/assets/styles/variables.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Poppins:wght@400;500;700&display=swap');
 
+  
 /* ——— Renk Paleti ——— */
 :root {
     --color-primary:    #1e3a8a;   /* Lacivert */
-    --color-secondary:  #3b82f6;   /* Açık mavi vurgu */
-    --color-bg:         #f5f7fa;   /* Sayfa arka planı */
-    --color-text:       #333333;   /* Ana metin rengi */
-    --color-light:      #ffffff;   /* Beyaz */
-    --color-muted:      #6b7280;   /* Gri ton (placeholder, alt metin) */
+    --color-secondary:  #3b82f6;   /* Açık mavi vurgu (gerektiğinde) */
+    --color-bg:         #ffffff;   /* Ana sayfa / container arka planı */
+    --color-text:       #000000;   /* Tüm metinler siyah */
+    --color-light:      #ffffff;   /* Beyaz (gerektiğinde) */
+    --color-muted:      #6b7280;   /* Gri ton (alt metin / placeholder) */
   
     /* ——— Tipografi ——— */
     --font-base:       'Montserrat', sans-serif;
     --font-heading:    'Montserrat', sans-serif;
+    --font-logo:       'Poppins', sans-serif;    /* ✅ EKLENDİ */
+
   
     /* ——— Geçiş Süreleri ——— */
     --transition-fast: 0.2s;

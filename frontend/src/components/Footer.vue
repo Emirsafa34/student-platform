@@ -1,90 +1,62 @@
 <template>
-    <footer class="footer animate-fadeInUp">
+    <footer class="footer">
       <div class="footer-container container">
         <div class="footer-box">
-          <h3 class="footer-title">Bize Ulaşın</h3>
-          <p class="footer-text">Her türlü soru ve öneriniz için:</p>
-          <a class="footer-link" href="mailto:info@seninsiten.com"
-            >info@seninsiten.com</a
-          >
+          <p class="footer-label">Her türlü soru ve öneriniz için:</p>
+          <a class="footer-mail" href="mailto:info@seninsiten.com">
+            info@seninsiten.com
+          </a>
         </div>
         <div class="footer-box">
-          <h3 class="footer-title">Takip Edin</h3>
-          <div class="social-icons">
-            <a href="#" aria-label="Twitter" class="social-icon">🐦</a>
-            <a href="#" aria-label="LinkedIn" class="social-icon">💼</a>
-            <a href="#" aria-label="GitHub" class="social-icon">🐙</a>
-          </div>
-        </div>
-        <div class="footer-box">
-          <h3 class="footer-title">© 2025 Ceng Rehber</h3>
-          <p class="footer-text">Tüm hakları saklıdır.</p>
+          <p class="footer-rights">Tüm hakları saklıdır.</p>
         </div>
       </div>
     </footer>
   </template>
   
-  <script setup>
-  // script gerek yok
-  </script>
+  <script setup></script>
   
   <style scoped>
   .footer {
     background-color: var(--color-primary);
     color: var(--color-light);
-    padding: 3rem 1rem;
-  }
-  .footer-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-  }
-  .footer-box {
-    flex: 1;
-    min-width: 200px;
-    transition: transform var(--transition);
-  }
-  .footer-box:hover {
-    transform: translateY(-5px);
-  }
-  .footer-title {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-  }
-  .footer-text {
-    font-size: 0.95rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.4;
-    color: var(--color-light);
-  }
-  .footer-link {
-    color: var(--color-light);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color var(--transition);
-  }
-  .footer-link:hover {
-    color: var(--color-secondary);
-  }
-  .social-icons {
-    display: flex;
-    gap: 1rem;
-  }
-  .social-icon {
-    font-size: 1.5rem;
-    transition: transform var(--transition);
-  }
-  .social-icon:hover {
-    transform: scale(1.2);
+    margin-top: auto;
+    padding: 1rem 0;
+    font-family: var(--font-logo); /* Modern font */
+    font-size: 0.9rem;
   }
   
-  /* Responsive */
-  @media (max-width: 768px) {
-    .footer-container {
-      flex-direction: column;
-      text-align: center;
-    }
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .footer-label {
+    margin: 0;
+    font-weight: 500;
+  }
+  
+  .footer-mail {
+    color: var(--color-light);
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    margin-top: 0.25rem;
+  }
+  
+  .footer-mail:hover {
+    color: var(--color-secondary);
+  }
+  
+  .footer-rights {
+    margin: 0;
+    font-size: 0.85rem;
+    text-align: right;
   }
   </style>
   
