@@ -4,25 +4,45 @@ const express  = require('express');
 const mongoose = require('mongoose');
 const dotenv   = require('dotenv');
 const cors     = require('cors');
+const path     = require('path');
+const helmet   = require('helmet');
+const morgan   = require('morgan');
 
 dotenv.config();
 
 const app = express();
-app.use(cors({
-  origin: 'http://localhost:5173',
+
+// Güvenlik başlıkları
+app.use(helmet());
+
+// İstek loglama (development modu için 'dev', prod’da daha ayrıntılı ya da farklı format kullanabilirsiniz)
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+} else {
+  app.use(morgan('common'));
+}
+
+// CORS configuration using environment variable
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   credentials: true
-}));
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
-// Controller / route dosyalarını yükle
- const userRoutes   = require('./routes/userRoutes');
-  const authRoutes   = require('./routes/authRoutes');
- const courseRoutes = require('./routes/courseRoutes');
- const qaRoutes     = require('./routes/qaRoutes');
+// Static folder for uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
- const { errorHandler } = require('./middleware/errorMiddleware');
+// Controller / route files
+const userRoutes   = require('./routes/userRoutes');
+const authRoutes   = require('./routes/authRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const qaRoutes     = require('./routes/qaRoutes');
 
-// MongoDB bağlantısı
+const { errorHandler } = require('./middleware/errorMiddleware');
+
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB bağlantısı başarılı'))
   .catch((err) => {
@@ -30,20 +50,20 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
 
-// 🚀 4. Adım: Route’ları mount et
-app.use('/api/auth',  authRoutes);    // register & login
-app.use('/api/users', userRoutes);    // profile ve user-CRUD
+// Mount routes
+app.use('/api/auth',  authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/qas',     qaRoutes);
 
-// Temel route
+// Base route
 app.get('/', (req, res) => {
   res.send('🎯 API çalışıyor');
 });
 
-// Hata yakalama middleware’i (EN SONA)
+// Error handler (last middleware)
 app.use(errorHandler);
 
-// Sunucu başlatma
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Sunucu ${PORT} portunda çalışıyor`));

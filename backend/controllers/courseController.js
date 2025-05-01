@@ -1,7 +1,8 @@
-// BACKEND: controllers/courseController.js
+// backend/controllers/courseController.js
+
 const Course = require('../models/Course');
 
-// Yeni ders ekle (sadece admin)
+// Create a new course (admin only)
 exports.createCourse = async (req, res, next) => {
   try {
     const newCourse = new Course({
@@ -15,44 +16,32 @@ exports.createCourse = async (req, res, next) => {
   }
 };
 
-// Tüm dersleri getir (aktif olanlar, pagination & filtreleme)
+// Get courses
 exports.getCourses = async (req, res, next) => {
   try {
-    const page = Math.max(parseInt(req.query.page) || 1, 1);
-    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
-    const search = req.query.search ? req.query.search.trim() : '';
-
-    const filter = { isDeleted: false };
-    if (search) filter.title = { $regex: search, $options: 'i' };
-
-    const total = await Course.countDocuments(filter);
-    const pages = Math.ceil(total / limit);
-
-    const courses = await Course.find(filter)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-
-    res.status(200).json({ success: true, courses, page, pages, total });
+    const courses = await Course.find({ isDeleted: false });
+    res.status(200).json({ success: true, courses });
   } catch (err) {
     next(err);
   }
 };
 
-// Ders güncelle (sadece admin)
+// Update course (admin only)
 exports.updateCourse = async (req, res, next) => {
   try {
-    const course = await Course.findById(req.params.id);
-    if (!course) return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
-
-    const updated = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Course.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
     res.status(200).json({ success: true, course: updated });
   } catch (err) {
     next(err);
   }
 };
 
-// Ders sil (soft delete - sadece admin)
+// Soft delete course (admin only)
 exports.deleteCourse = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);

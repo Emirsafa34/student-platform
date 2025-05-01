@@ -1,15 +1,11 @@
 // backend/controllers/qaController.js
 
-const QA = require('../models/QA.js');
+const QA = require('../models/QA');
 const asyncHandler = require('express-async-handler');
 
-// Yeni soru oluştur (user & admin)
+// Create question
 exports.createQA = asyncHandler(async (req, res) => {
   const { question } = req.body;
-  if (!question) {
-    res.status(400);
-    throw new Error('Soru metni boş olamaz');
-  }
   const newQA = await QA.create({
     question,
     createdBy: req.user._id
@@ -17,62 +13,54 @@ exports.createQA = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, qa: newQA });
 });
 
-// Tüm aktif soru-cevapları getir (cevaplarla birlikte)
+// Get all QAs
 exports.getAllQA = asyncHandler(async (req, res) => {
-  const qaList = await QA.find({ isDeleted: false })
-    .populate({ path: 'createdBy', select: 'username role', strictPopulate: false })
-    .populate({ path: 'answers.createdBy', select: 'username', strictPopulate: false });
-  res.status(200).json({ success: true, qaList });
+  const list = await QA.find({ isDeleted: false });
+  res.status(200).json({ success: true, qas: list });
 });
 
-// Bir soruya cevap ekle (user & admin)
+// Add answer
 exports.addAnswer = asyncHandler(async (req, res) => {
   const { text } = req.body;
-  if (!text) {
-    res.status(400);
-    throw new Error('Cevap metni gerekli');
-  }
   const qa = await QA.findById(req.params.id);
-  if (!qa || qa.isDeleted) {
+  if (!qa) {
     res.status(404);
     throw new Error('Soru bulunamadı');
   }
   qa.answers.push({ text, createdBy: req.user._id });
-  const updated = await qa.save();
-  res.status(201).json({ success: true, qa: updated });
+  await qa.save();
+  res.status(200).json({ success: true, qa });
 });
 
-// Soru güncelle (sadece oluşturan veya admin)
+// Update question
 exports.updateQA = asyncHandler(async (req, res) => {
   const qa = await QA.findById(req.params.id);
-  if (!qa || qa.isDeleted) {
+  if (!qa) {
     res.status(404);
     throw new Error('Soru bulunamadı');
   }
-  if (req.user.role !== 'admin' && qa.createdBy.toString() !== req.user._id.toString()) {
+  if (qa.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     res.status(403);
-    throw new Error('Yetkiniz yok');
+    throw new Error('Bu işlemi yapmaya yetkiniz yok');
   }
-  const { question } = req.body;
-  if (question) qa.question = question;
-  const updated = await qa.save();
-  res.status(200).json({ success: true, qa: updated });
+  qa.question = req.body.question || qa.question;
+  await qa.save();
+  res.status(200).json({ success: true, qa });
 });
 
-// Cevap silme (sadece admin)
+// Delete answer (admin only)
 exports.deleteAnswer = asyncHandler(async (req, res) => {
-  const { qId, ansId } = req.params;
-  const qa = await QA.findById(qId);
-  if (!qa || qa.isDeleted) {
+  const qa = await QA.findById(req.params.qId);
+  if (!qa) {
     res.status(404);
     throw new Error('Soru bulunamadı');
   }
-  qa.answers = qa.answers.filter(ans => ans._id.toString() !== ansId);
-  const updated = await qa.save();
-  res.status(200).json({ success: true, qa: updated });
+  qa.answers = qa.answers.filter(ans => ans._id.toString() !== req.params.ansId);
+  await qa.save();
+  res.status(200).json({ success: true, qa });
 });
 
-// Soft delete soru (sadece admin veya oluşturan user)
+// Soft delete question
 exports.deleteQA = asyncHandler(async (req, res) => {
   const qa = await QA.findById(req.params.id);
   if (!qa) {
