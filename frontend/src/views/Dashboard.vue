@@ -1,41 +1,70 @@
 <template>
-  <div>
-    <div class="dashboard-container">
-      <h2>Hoş geldiniz!</h2>
-      <p>Rolünüz: {{ user.role || 'Bilinmiyor' }}</p>
+  <div class="dashboard-page">
 
-      <!-- Son Eklenen Dersler -->
-      <section>
-        <h3>📚 En Son Eklenen Dersler</h3>
-        <ul v-if="latestCourses.length">
-          <li
-            v-for="course in latestCourses"
-            :key="course._id"
-            class="clickable"
-            @click="goToCourse(course._id)"
-          >
-            <strong>{{ course.title }}</strong> – {{ course.grade }}. Sınıf
-            <br />
-            <span v-if="course.description" class="desc">
-              {{ course.description.slice(0, 80) }}...
-            </span>
-          </li>
-        </ul>
-        <p v-else>Henüz ders yok.</p>
-      </section>
+    <div class="dashboard-wrapper">
+      <!-- Sol tarafta sabit yan menü -->
+      <aside class="sidebar">
+        <router-link to="/announcements" class="sidebar-link">📰 Duyurular</router-link>
+        <router-link to="/courses"       class="sidebar-link">📚 Dersler</router-link>
+        <router-link to="/qas"           class="sidebar-link">❓ Soru-Cevap</router-link>
+      </aside>
 
-      <!-- Son Sorular -->
-      <section>
-        <h3>❓ Son Sorular</h3>
-        <ul v-if="latestQAs.length">
-          <li class="clickable" v-for="qa in latestQAs" :key="qa._id" @click="goToQAs">
-            <strong>{{ qa.question }}</strong>
-            <br />
-            <small>Ekleyen: {{ qa.createdBy?.username || 'Bilinmiyor' }}</small>
-          </li>
-        </ul>
-        <p v-else>Henüz soru yok.</p>
-      </section>
+      <!-- Sağ ana içerik -->
+      <main class="dashboard-content">
+        <!-- 1) En üstte Son Duyurular -->
+        <section class="section announcements-section">
+          <h3>📰 Son Duyurular</h3>
+          <ul v-if="latestAnnouncements.length" class="list">
+            <li
+              v-for="ann in latestAnnouncements"
+              :key="ann._id"
+              class="list-item clickable"
+              @click="goToAnnouncements"
+            >
+              <strong>{{ ann.title }}</strong>
+              <p class="desc">{{ snippet(ann.content) }}</p>
+              <small class="meta">{{ formatDate(ann.createdAt) }}</small>
+            </li>
+          </ul>
+          <p v-else><em>Henüz duyuru yok.</em></p>
+        </section>
+
+        <!-- 2) En Son Eklenen Dersler -->
+        <section class="section courses-section">
+          <h3>📚 En Son Eklenen Dersler</h3>
+          <ul v-if="latestCourses.length" class="list">
+            <li
+              v-for="course in latestCourses"
+              :key="course._id"
+              class="list-item clickable"
+              @click="goToCourse(course._id)"
+            >
+              <strong>{{ course.title }}</strong> – {{ course.grade }}. Sınıf
+              <p v-if="course.description" class="desc">
+                {{ course.description.slice(0, 80) }}…
+              </p>
+            </li>
+          </ul>
+          <p v-else><em>Henüz ders yok.</em></p>
+        </section>
+
+        <!-- 3) Son Sorular -->
+        <section class="section qas-section">
+          <h3>❓ Son Sorular</h3>
+          <ul v-if="latestQAs.length" class="list">
+            <li
+              v-for="qa in latestQAs"
+              :key="qa._id"
+              class="list-item clickable"
+              @click="goToQAs"
+            >
+              <strong>{{ qa.question }}</strong>
+              <p class="meta">Ekleyen: {{ qa.createdBy?.username || 'Bilinmiyor' }}</p>
+            </li>
+          </ul>
+          <p v-else><em>Henüz soru yok.</em></p>
+        </section>
+      </main>
     </div>
   </div>
 </template>
@@ -43,60 +72,97 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { fetchCourses } from '../services/courseService';
-import { fetchQAs } from '../services/qaService';
+import Navbar from '@/components/Navbar.vue';
+import { fetchCourses } from '@/services/courseService';
+import { fetchQAs } from '@/services/qaService';
+import { fetchAnnouncements } from '@/services/announcementService';
 
 const router = useRouter();
-const user = {
-  role: localStorage.getItem('role')
-};
+const user = { role: localStorage.getItem('role') };
 
-const latestCourses = ref([]);
-const latestQAs = ref([]);
+const latestAnnouncements = ref([]);
+const latestCourses       = ref([]);
+const latestQAs           = ref([]);
 
 onMounted(async () => {
   try {
-    const courseRes = await fetchCourses();
-    latestCourses.value = (courseRes.courses || courseRes).slice(-3).reverse();
+    // Duyurular
+    const annRes = await fetchAnnouncements();
+    const allAnns = annRes.announcements || annRes;
+    latestAnnouncements.value = allAnns
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3);
 
+    // Dersler
+    const courseRes = await fetchCourses();
+    const allCourses = courseRes.courses || courseRes;
+    latestCourses.value = allCourses.slice(-3).reverse();
+
+    // Sorular
     const qaRes = await fetchQAs();
-    latestQAs.value = (qaRes.qaList || qaRes).slice(-3).reverse();
+    const allQAs = qaRes.qaList || qaRes;
+    latestQAs.value = allQAs.slice(-3).reverse();
   } catch (err) {
     console.error('Dashboard verisi yüklenemedi:', err);
   }
 });
 
-// Yönlendirme fonksiyonları
-const goToCourse = (id) => {
-  // Detaya geçişi Courses.vue'de yakalamak için localStorage kullanıyoruz
+// Yönlendirme
+const goToAnnouncements = () => router.push('/announcements');
+const goToCourse        = (id) => {
   localStorage.setItem('selectedCourseId', id);
   router.push('/courses');
 };
+const goToQAs           = () => router.push('/qas');
 
-const goToQAs = () => {
-  router.push('/qas');
+// İçerikten kısa önizleme
+const snippet = (md) => {
+  const text = md.replace(/[#_*>\-\[\]\(\)`]/g, '').trim();
+  return text.length > 80 ? text.slice(0, 80) + '…' : text;
 };
+const formatDate = (str) =>
+  new Date(str).toLocaleDateString('tr-TR', { year:'numeric', month:'short', day:'numeric' });
 </script>
 
 <style scoped>
-.dashboard-container {
-  padding: 40px;
-  max-width: 900px;
-  margin: auto;
+.dashboard-wrapper {
+  display: flex;
+  min-height: calc(100vh - var(--navbar-height));
 }
-section {
-  margin-top: 2rem;
-  text-align: left;
+.sidebar {
+  width: 200px;
+  background: var(--color-card-bg);
+  border-right: 1px solid var(--color-border);
+  padding: var(--spacing);
 }
-ul {
+.sidebar-link {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+.sidebar-link:hover {
+  color: var(--color-secondary);
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: var(--spacing);
+}
+.section {
+  margin-bottom: 2rem;
+}
+.list {
   list-style: none;
   padding: 0;
 }
-li {
-  padding: 10px 0;
+.list-item {
+  padding: 0.5rem 0;
   border-bottom: 1px solid var(--color-border);
 }
-li strong {
+.list-item strong {
   color: var(--color-primary);
 }
 .desc {
@@ -104,11 +170,27 @@ li strong {
   font-size: 0.9rem;
   color: var(--color-muted);
 }
+.meta {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+}
 .clickable {
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-fast);
 }
 .clickable:hover {
   background-color: #f0f0f0;
+}
+
+@media (max-width: 900px) {
+  .dashboard-wrapper {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
 }
 </style>

@@ -5,12 +5,11 @@
       <button @click="openForm">{{ editingId ? 'Düzenleme Modu' : 'Yeni Ders Ekle' }}</button>
       <div v-if="showForm" class="form">
         <input v-model="form.title" placeholder="Ders Başlığı" required />
-        <textarea v-model="form.description" placeholder="Açıklama" rows="3" required></textarea>
+        <textarea v-model="form.description" placeholder="Açıklama (Markdown desteklenir)" rows="3" required></textarea>
         <select v-model="form.grade" required>
           <option disabled value="">— Sınıf Seçin —</option>
           <option v-for="g in grades" :key="g" :value="g">{{ g }}. Sınıf</option>
         </select>
-        <!-- ✅ Dönem Seçimi -->
         <select v-model="form.term" required>
           <option disabled value="">— Dönem Seçin —</option>
           <option value="güz">Güz</option>
@@ -31,11 +30,11 @@
       </div>
     </div>
 
-    <!-- Ders Detay (Tam Ekran) -->
+    <!-- Ders Detay -->
     <div v-if="selectedCourse" class="course-detail-overlay">
       <button class="back-btn" @click="selectedCourse = null">‹ Geri</button>
       <h3>{{ selectedCourse.title }}</h3>
-      <p>{{ selectedCourse.description }}</p>
+      <div class="course-description" v-html="renderMarkdown(selectedCourse.description)"></div>
 
       <img
         v-if="selectedCourse.thumbnailUrl"
@@ -70,7 +69,7 @@
       </div>
     </div>
 
-    <!-- Sınıf Bazlı Panel Listesi -->
+    <!-- Sınıf Panelleri -->
     <div v-else class="grade-panels">
       <div v-for="grade in grades" :key="grade" class="grade-panel">
         <h3>{{ grade }}. Sınıf</h3>
@@ -93,6 +92,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { marked } from 'marked';
 import { fetchCourses, createCourse, updateCourse, removeCourse } from '../services/courseService';
 
 const isAdmin = computed(() => localStorage.getItem('role') === 'admin');
@@ -103,13 +103,8 @@ const selectedCourse = ref(null);
 const showForm = ref(false);
 const editingId = ref(null);
 const form = ref({
-  title: '',
-  description: '',
-  grade: null,
-  term: '', // ✅ Eklendi
-  thumbnailUrl: '',
-  pdfUrl: '',
-  youtubePlaylist: ''
+  title: '', description: '', grade: null, term: '',
+  thumbnailUrl: '', pdfUrl: '', youtubePlaylist: ''
 });
 
 async function load() {
@@ -122,27 +117,22 @@ const coursesByGrade = g => courses.value.filter(c => Number(c.grade) === g);
 const arrayify = x => Array.isArray(x) ? x : [x];
 const fileName = url => url.split('/').pop();
 const embedUrl = url => {
-const m = url.match(/(?:v=|\.be\/|embed\/)([^&?]+)/);
-return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+  const m = url.match(/(?:v=|\.be\/|embed\/)([^&?]+)/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : url;
 };
+const renderMarkdown = (text) => marked.parse(text || '');
 
 function selectCourse(c) {
   selectedCourse.value = c;
 }
-
 function openForm() {
   showForm.value = true;
   if (editingId.value) {
     Object.assign(form.value, selectedCourse.value);
   } else {
     Object.assign(form.value, {
-      title: '',
-      description: '',
-      grade: null,
-      term: '',
-      thumbnailUrl: '',
-      pdfUrl: '',
-      youtubePlaylist: ''
+      title: '', description: '', grade: null, term: '',
+      thumbnailUrl: '', pdfUrl: '', youtubePlaylist: ''
     });
   }
 }
@@ -183,8 +173,26 @@ async function deleteCourse(id) {
   margin-top: var(--navbar-height);
   padding: var(--spacing);
 }
-
-/* Detay sayfası tam ekran */
+.course-description {
+  line-height: 1.6;
+  font-family: var(--font-base);
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+.course-description h1,
+.course-description h2,
+.course-description h3 {
+  color: var(--color-primary);
+  margin-top: 1rem;
+}
+.course-description ul {
+  padding-left: 1.2rem;
+  list-style-type: disc;
+}
+.course-description a {
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
 .course-detail-overlay {
   position: fixed;
   top: var(--navbar-height);
@@ -220,8 +228,6 @@ async function deleteCourse(id) {
   width: 100%; height: 100%;
   border: 0;
 }
-
-/* Yatay paneller */
 .grade-panels {
   display: flex;
   flex-wrap: nowrap;
@@ -239,7 +245,6 @@ async function deleteCourse(id) {
   padding: var(--spacing);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-/* Mobilde wrap ile alt alta */
 @media (max-width: 768px) {
   .grade-panels {
     flex-wrap: wrap;
@@ -250,7 +255,6 @@ async function deleteCourse(id) {
     max-width: 100%;
   }
 }
-
 .course-btn {
   width: 100%;
   text-align: left;
@@ -270,7 +274,6 @@ async function deleteCourse(id) {
   cursor: pointer;
   margin-left: 0.25rem;
 }
-
 .admin-form {
   margin-bottom: var(--spacing);
 }

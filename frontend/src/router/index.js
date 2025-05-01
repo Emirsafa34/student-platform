@@ -5,6 +5,8 @@ import Login     from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Courses   from '../views/Courses.vue';
 import QAs       from '../views/QAs.vue';
+import Announcements from '../views/Announcements.vue';
+
 
 const routes = [
   // Ana sayfa (Dashboard) herkese açık
@@ -17,6 +19,10 @@ const routes = [
   // Dersler ve Soru-Cevap herkes için açık
   { path: '/courses',  component: Courses },
   { path: '/qas',      component: QAs },
+  {
+    path: '/announcements',
+    component: Announcements
+  }
   // İleride korumak istediğin başka sayfalar olursa:
   // {
   //   path: '/secret',

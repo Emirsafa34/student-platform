@@ -9,13 +9,16 @@
 
     <button class="hamburger" @click="toggleMenu">☰</button>
 
-    <!-- SLIDE Menü -->
+    <!-- SLIDE Menü (Mobil) -->
     <div class="mobile-menu" :class="{ open: menuOpen }">
       <router-link to="/" @click="closeMenu">Anasayfa</router-link>
       <router-link to="/courses" @click="closeMenu">Dersler</router-link>
       <router-link to="/qas" @click="closeMenu">Soru-Cevap</router-link>
+      <router-link to="/announcements" @click="closeMenu">Duyurular</router-link> <!-- ✅ EKLENDİ -->
+
       <router-link v-if="!authStore.isAuthenticated" to="/login" @click="closeMenu">🔐 Giriş Yap</router-link>
       <router-link v-if="!authStore.isAuthenticated" to="/register" @click="closeMenu">📝 Kayıt Ol</router-link>
+      
       <template v-if="authStore.isAuthenticated">
         <span class="user-info">👤 {{ authStore.user.username }}</span>
         <button @click="handleLogout">Çıkış</button>
@@ -29,6 +32,8 @@
       <router-link to="/courses">Dersler</router-link>
       <span class="divider">|</span>
       <router-link to="/qas">Soru-Cevap</router-link>
+      <span class="divider">|</span>
+      <router-link to="/announcements">Duyurular</router-link> <!-- ✅ EKLENDİ -->
     </div>
 
     <div class="navbar-right desktop-only">
@@ -75,7 +80,6 @@ function handleLogout() {
   z-index: 1000;
 }
 
-/* LOGO */
 .navbar-logo-link {
   display: flex;
   align-items: center;
@@ -93,7 +97,6 @@ function handleLogout() {
   color: var(--color-light);
 }
 
-/* DESKTOP MENÜ */
 .navbar-center,
 .navbar-right {
   display: flex;
@@ -135,7 +138,6 @@ button:hover {
   font-family: var(--font-base);
 }
 
-/* HAMBURGER */
 .hamburger {
   display: none;
   background: none;
@@ -145,7 +147,6 @@ button:hover {
   cursor: pointer;
 }
 
-/* SLIDE MENÜ */
 .mobile-menu {
   position: fixed;
   top: var(--navbar-height, 60px);
@@ -176,7 +177,6 @@ button:hover {
   padding: 6px 12px;
 }
 
-/* OVERLAY */
 .overlay {
   position: fixed;
   top: var(--navbar-height, 60px);
@@ -187,20 +187,16 @@ button:hover {
   z-index: 998;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .hamburger {
     display: block;
   }
-
   .desktop-only {
     display: none;
   }
-
   .logo {
     width: 120px;
   }
-
   .site-name {
     font-size: 1.25rem;
   }

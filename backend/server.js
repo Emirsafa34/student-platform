@@ -39,6 +39,8 @@ const userRoutes   = require('./routes/userRoutes');
 const authRoutes   = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const qaRoutes     = require('./routes/qaRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
+
 
 const { errorHandler } = require('./middleware/errorMiddleware');
 
@@ -55,6 +57,8 @@ app.use('/api/auth',  authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/qas',     qaRoutes);
+app.use('/api/announcements', announcementRoutes);
+
 
 // Base route
 app.get('/', (req, res) => {
