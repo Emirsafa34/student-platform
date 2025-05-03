@@ -2,30 +2,63 @@
   <div class="courses-view-container">
     <!-- Admin Form -->
     <div v-if="isAdmin" class="admin-form">
-      <button @click="openForm">{{ editingId ? 'Düzenleme Modu' : 'Yeni Ders Ekle' }}</button>
+      <button
+        class="btn-add-course"
+        @click="openForm"
+      >
+        {{ editingId ? 'Düzenleme Modu' : 'Yeni Ders Ekle' }}
+      </button>
       <div v-if="showForm" class="form">
-        <input v-model="form.title" placeholder="Ders Başlığı" required />
-        <textarea v-model="form.description" placeholder="Açıklama (Markdown desteklenir)" rows="3" required></textarea>
+        <input
+          v-model="form.title"
+          placeholder="Ders Başlığı"
+          required
+        />
+        <textarea
+          v-model="form.description"
+          placeholder="Açıklama"
+          rows="3"
+          required
+        ></textarea>
         <select v-model="form.grade" required>
           <option disabled value="">— Sınıf Seçin —</option>
-          <option v-for="g in grades" :key="g" :value="g">{{ g }}. Sınıf</option>
+          <option
+            v-for="g in grades"
+            :key="g"
+            :value="g"
+          >{{ g }}. Sınıf</option>
         </select>
         <select v-model="form.term" required>
           <option disabled value="">— Dönem Seçin —</option>
           <option value="güz">Güz</option>
           <option value="bahar">Bahar</option>
         </select>
-        <input v-model="form.thumbnailUrl" placeholder="Resim URL (opsiyonel)" />
-        <input v-model="form.pdfUrl" placeholder="PDF URL (opsiyonel)" />
-        <input v-model="form.youtubePlaylist" placeholder="YouTube URL (opsiyonel)" />
+        <input
+          v-model="form.thumbnailUrl"
+          placeholder="Resim URL (opsiyonel)"
+        />
+        <input
+          v-model="form.pdfUrl"
+          placeholder="PDF URL (opsiyonel)"
+        />
+        <input
+          v-model="form.youtubePlaylist"
+          placeholder="YouTube URL (opsiyonel)"
+        />
         <div class="form-buttons">
           <button
+            class="btn-add-course"
             @click="saveCourse"
             :disabled="!form.title.trim() || !form.description.trim() || !form.grade || !form.term"
           >
             Kaydet
           </button>
-          <button @click="cancelForm">İptal</button>
+          <button
+            class="btn-cancel"
+            @click="cancelForm"
+          >
+            İptal
+          </button>
         </div>
       </div>
     </div>
@@ -34,7 +67,10 @@
     <div v-if="selectedCourse" class="course-detail-overlay">
       <button class="back-btn" @click="selectedCourse = null">‹ Geri</button>
       <h3>{{ selectedCourse.title }}</h3>
-      <div class="course-description" v-html="renderMarkdown(selectedCourse.description)"></div>
+      <div
+        class="course-description"
+        v-html="renderMarkdown(selectedCourse.description)"
+      ></div>
 
       <img
         v-if="selectedCourse.thumbnailUrl"
@@ -46,8 +82,15 @@
       <div v-if="selectedCourse.pdfUrl">
         <h4>PDF Dokümanlar</h4>
         <ul>
-          <li v-for="url in arrayify(selectedCourse.pdfUrl)" :key="url">
-            <a :href="url" target="_blank" rel="noopener">{{ fileName(url) }}</a>
+          <li
+            v-for="url in arrayify(selectedCourse.pdfUrl)"
+            :key="url"
+          >
+            <a
+              :href="url"
+              target="_blank"
+              rel="noopener"
+            >{{ fileName(url) }}</a>
           </li>
         </ul>
       </div>
@@ -71,19 +114,30 @@
 
     <!-- Sınıf Panelleri -->
     <div v-else class="grade-panels">
-      <div v-for="grade in grades" :key="grade" class="grade-panel">
+      <div
+        v-for="grade in grades"
+        :key="grade"
+        class="grade-panel"
+      >
         <h3>{{ grade }}. Sınıf</h3>
         <ul>
-          <li v-for="c in coursesByGrade(grade)" :key="c._id" class="course-item">
-            <button class="course-btn" @click="selectCourse(c)">
-              {{ c.title }}
-            </button>
+          <li
+            v-for="c in coursesByGrade(grade)"
+            :key="c._id"
+            class="course-item"
+          >
+            <button
+              class="course-btn"
+              @click="selectCourse(c)"
+            >{{ c.title }}</button>
             <span v-if="isAdmin" class="list-actions">
               <button @click.stop="enterEditMode(c)">✎</button>
               <button @click.stop="deleteCourse(c._id)">🗑</button>
             </span>
           </li>
-          <li v-if="!coursesByGrade(grade).length"><em>Henüz ders yok.</em></li>
+          <li v-if="!coursesByGrade(grade).length">
+            <em>Henüz ders yok.</em>
+          </li>
         </ul>
       </div>
     </div>
@@ -93,7 +147,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { marked } from 'marked';
-import { fetchCourses, createCourse, updateCourse, removeCourse } from '../services/courseService';
+import {
+  fetchCourses,
+  createCourse,
+  updateCourse,
+  removeCourse
+} from '../services/courseService';
 
 const isAdmin = computed(() => localStorage.getItem('role') === 'admin');
 const grades = [1, 2, 3, 4];
@@ -103,8 +162,13 @@ const selectedCourse = ref(null);
 const showForm = ref(false);
 const editingId = ref(null);
 const form = ref({
-  title: '', description: '', grade: null, term: '',
-  thumbnailUrl: '', pdfUrl: '', youtubePlaylist: ''
+  title: '',
+  description: '',
+  grade: null,
+  term: '',
+  thumbnailUrl: '',
+  pdfUrl: '',
+  youtubePlaylist: ''
 });
 
 async function load() {
@@ -113,14 +177,16 @@ async function load() {
 }
 onMounted(load);
 
-const coursesByGrade = g => courses.value.filter(c => Number(c.grade) === g);
+const coursesByGrade = g =>
+  courses.value.filter(c => Number(c.grade) === g);
+
 const arrayify = x => Array.isArray(x) ? x : [x];
 const fileName = url => url.split('/').pop();
 const embedUrl = url => {
   const m = url.match(/(?:v=|\.be\/|embed\/)([^&?]+)/);
   return m ? `https://www.youtube.com/embed/${m[1]}` : url;
 };
-const renderMarkdown = (text) => marked.parse(text || '');
+const renderMarkdown = text => marked.parse(text || '');
 
 function selectCourse(c) {
   selectedCourse.value = c;
@@ -131,8 +197,13 @@ function openForm() {
     Object.assign(form.value, selectedCourse.value);
   } else {
     Object.assign(form.value, {
-      title: '', description: '', grade: null, term: '',
-      thumbnailUrl: '', pdfUrl: '', youtubePlaylist: ''
+      title: '',
+      description: '',
+      grade: null,
+      term: '',
+      thumbnailUrl: '',
+      pdfUrl: '',
+      youtubePlaylist: ''
     });
   }
 }
@@ -160,11 +231,12 @@ function enterEditMode(c) {
   openForm();
 }
 async function deleteCourse(id) {
-  if (confirm('Bu dersi silmek istiyor musunuz?')) {
-    await removeCourse(id);
-    selectedCourse.value = selectedCourse.value?._id === id ? null : selectedCourse.value;
-    await load();
+  if (!confirm('Bu dersi silmek istiyor musunuz?')) return;
+  await removeCourse(id);
+  if (selectedCourse.value?._id === id) {
+    selectedCourse.value = null;
   }
+  await load();
 }
 </script>
 
@@ -178,20 +250,6 @@ async function deleteCourse(id) {
   font-family: var(--font-base);
   color: var(--color-text);
   margin-bottom: 1rem;
-}
-.course-description h1,
-.course-description h2,
-.course-description h3 {
-  color: var(--color-primary);
-  margin-top: 1rem;
-}
-.course-description ul {
-  padding-left: 1.2rem;
-  list-style-type: disc;
-}
-.course-description a {
-  color: var(--color-secondary);
-  text-decoration: underline;
 }
 .course-detail-overlay {
   position: fixed;
@@ -274,16 +332,47 @@ async function deleteCourse(id) {
   cursor: pointer;
   margin-left: 0.25rem;
 }
-.admin-form {
-  margin-bottom: var(--spacing);
+/* Form Buttons Modern */
+.btn-add-course {
+  background-color: var(--color-primary);
+  color: var(--color-light);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    background-color var(--transition),
+    transform var(--transition-fast),
+    box-shadow var(--transition);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.form > * {
-  margin-bottom: var(--spacing);
-  width: 100%;
+.btn-add-course:hover {
+  background-color: var(--color-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+.btn-cancel {
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+              transform var(--transition-fast),
+              color var(--transition-fast);
+}
+.btn-cancel:hover {
+  background-color: var(--color-primary);
+  color: var(--color-light);
+  transform: translateY(-1px);
 }
 .form-buttons {
   display: flex;
   gap: 0.5rem;
+  margin-top: var(--spacing);
 }
 .admin-actions {
   margin-top: var(--spacing);
