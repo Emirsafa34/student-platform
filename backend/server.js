@@ -35,12 +35,11 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Controller / route files
-const userRoutes   = require('./routes/userRoutes');
-const authRoutes   = require('./routes/authRoutes');
-const courseRoutes = require('./routes/courseRoutes');
-const qaRoutes     = require('./routes/qaRoutes');
+const userRoutes         = require('./routes/userRoutes');
+const authRoutes         = require('./routes/authRoutes');
+const courseRoutes       = require('./routes/courseRoutes');
+const qaRoutes           = require('./routes/qaRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
-
 
 const { errorHandler } = require('./middleware/errorMiddleware');
 
@@ -53,12 +52,11 @@ mongoose.connect(process.env.MONGO_URI)
   });
 
 // Mount routes
-app.use('/api/auth',  authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/courses', courseRoutes);
-app.use('/api/qas',     qaRoutes);
+app.use('/api/auth',          authRoutes);
+app.use('/api/users',         userRoutes);
+app.use('/api/courses',       courseRoutes);
+app.use('/api/qas',           qaRoutes);
 app.use('/api/announcements', announcementRoutes);
-
 
 // Base route
 app.get('/', (req, res) => {

@@ -3,7 +3,7 @@
     <h2>Duyurular</h2>
 
     <div class="announcements-layout">
-      <!-- SOL PANEL: Admin Duyuru Ekleme -->
+      <!-- Sol panel: Admin duyuru ekleme formu -->
       <aside v-if="isAdmin" class="sidebar announcement-form">
         <h3>Yeni Duyuru Ekle</h3>
         <input
@@ -16,6 +16,7 @@
           placeholder="İçerik (Markdown desteklenir)"
         ></textarea>
         <button
+          class="btn-add-course"
           @click="submitAnnouncement"
           :disabled="!form.title.trim() || !form.content.trim()"
         >
@@ -23,22 +24,23 @@
         </button>
       </aside>
 
-      <!-- SAĞ PANEL: Duyuru Listesi + Sayfalama -->
+      <!-- Sağ panel: Liste + sayfalama -->
       <section class="content">
-        <div v-if="paginatedAnnouncements.length">
+        <div v-if="paged.length">
           <div
-            v-for="ann in paginatedAnnouncements"
+            v-for="ann in paged"
             :key="ann._id"
             class="announcement-card"
           >
             <h3>{{ ann.title }}</h3>
+            <!-- Burada Markdown içeriği render ediliyor -->
             <div
               class="announcement-content"
               v-html="renderMarkdown(ann.content)"
             ></div>
             <p class="meta">
               📅 {{ formatDate(ann.createdAt) }} – 👤
-              {{ ann.createdBy?.username || 'Admin' }}
+              {{ ann.createdBy?.username }}
             </p>
             <button
               v-if="isAdmin"
@@ -54,19 +56,15 @@
         <div class="pagination">
           <button
             class="page-btn"
-            @click="prevPage"
-            :disabled="currentPage === 1"
-          >
-            ‹ Önceki
-          </button>
-          <span>Sayfa {{ currentPage }} / {{ totalPages }}</span>
+            @click="goPrev"
+            :disabled="page === 1"
+          >‹ Önceki</button>
+          <span>Sayfa {{ page }} / {{ totalPages }}</span>
           <button
             class="page-btn"
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-          >
-            Sonraki ›
-          </button>
+            @click="goNext"
+            :disabled="page === totalPages"
+          >Sonraki ›</button>
         </div>
       </section>
     </div>
@@ -74,67 +72,57 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { marked } from 'marked';
+import { ref, computed, onMounted } from 'vue';
+import { marked } from 'marked';  // Markdown için
 import {
   fetchAnnouncements,
   createAnnouncement,
   removeAnnouncement
-} from '@/services/announcementService';
+} from '@/services/announcementService';  // :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
 
 const form = ref({ title: '', content: '' });
-const announcements = ref([]);
+const all = ref([]);
+const page = ref(1);
+const size = 5;
 
 const isAdmin = computed(() => localStorage.getItem('role') === 'admin');
 
-// Pagination
-const currentPage = ref(1);
-const pageSize    = 5;
-const totalPages  = computed(() =>
-  Math.max(1, Math.ceil(announcements.value.length / pageSize))
-);
-const paginatedAnnouncements = computed(() => {
-  const start = (currentPage.value - 1) * pageSize;
-  return announcements.value.slice(start, start + pageSize);
-});
-
-const loadAnnouncements = async () => {
-  const res = await fetchAnnouncements();
-  const all = res.announcements || res;
-  // en yeni en eskiye
-  announcements.value = all
-    .slice()
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+const load = async () => {
+  all.value = await fetchAnnouncements();
+  page.value = 1;
 };
-onMounted(loadAnnouncements);
+onMounted(load);
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(all.value.length / size))
+);
+const paged = computed(() => {
+  const start = (page.value - 1) * size;
+  return all.value.slice(start, start + size);
+});
 
 const submitAnnouncement = async () => {
   await createAnnouncement(form.value);
   form.value.title = '';
   form.value.content = '';
-  currentPage.value = 1;
-  await loadAnnouncements();
+  await load();
 };
 
 const deleteAnnouncement = async (id) => {
-  if (!confirm('Bu duyuruyu silmek istiyor musunuz?')) return;
+  if (!confirm('Silinsin mi?')) return;
   await removeAnnouncement(id);
-  await loadAnnouncements();
+  await load();
 };
 
-const prevPage = () => {
-  if (currentPage.value > 1) currentPage.value--;
-};
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) currentPage.value++;
-};
+const goPrev = () => { if (page.value > 1) page.value--; };
+const goNext = () => { if (page.value < totalPages.value) page.value++; };
 
+// Markdown işleyici
 const renderMarkdown = (text) => marked.parse(text || '');
-const formatDate     = (str)  =>
-  new Date(str).toLocaleDateString('tr-TR', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+// Tarih formatlama
+const formatDate = (s) =>
+  new Date(s).toLocaleDateString('tr-TR', {
+    year: 'numeric', month: 'short', day: 'numeric'
   });
 </script>
 
@@ -143,6 +131,7 @@ const formatDate     = (str)  =>
   max-width: 1000px;
   margin: 2rem auto;
   padding: 1rem;
+  font-family: var(--font-base);
 }
 
 .announcements-layout {
@@ -150,12 +139,9 @@ const formatDate     = (str)  =>
   gap: var(--spacing);
 }
 
-/* Sol panel (sidebar) */
+/* Sol form paneli */
 .sidebar {
   flex: 0 0 300px;
-}
-.sidebar h3 {
-  margin-bottom: 0.75rem;
 }
 .announcement-form input,
 .announcement-form textarea {
@@ -163,17 +149,22 @@ const formatDate     = (str)  =>
   margin-bottom: 0.5rem;
   padding: 0.5rem;
 }
-.announcement-form button {
+.btn-add-course {
+  background: var(--color-primary);
+  color: var(--color-light);
+  border: none;
   padding: 0.5rem 1rem;
+  border-radius: var(--radius);
   cursor: pointer;
 }
+.btn-add-course:hover {
+  background: var(--color-secondary);
+}
 
-/* Sağ panel (content) */
+/* Sağ içerik paneli */
 .content {
   flex: 1;
 }
-
-/* Duyuru kartları */
 .announcement-card {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -181,28 +172,9 @@ const formatDate     = (str)  =>
   margin-bottom: var(--spacing);
   background: var(--color-card-bg);
 }
-.announcement-card h3 {
-  margin: 0 0 0.5rem;
-  color: var(--color-primary);
-}
 .announcement-content {
   line-height: 1.6;
-  color: var(--color-text);
-  margin-bottom: 0.5rem;
-}
-.announcement-content h1,
-.announcement-content h2,
-.announcement-content h3 {
-  color: var(--color-primary);
-  margin-top: 1rem;
-}
-.announcement-content ul {
-  padding-left: 1.2rem;
-  list-style-type: disc;
-}
-.announcement-content a {
-  color: var(--color-secondary);
-  text-decoration: underline;
+  margin: 0.5rem 0;
 }
 .meta {
   font-size: 0.85rem;
@@ -216,7 +188,7 @@ const formatDate     = (str)  =>
   cursor: pointer;
 }
 
-/* Sayfalama butonları */
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
@@ -237,13 +209,12 @@ const formatDate     = (str)  =>
   cursor: not-allowed;
 }
 
-/* Mobilde alt alta geçiş */
+/* Mobil uyum */
 @media (max-width: 768px) {
   .announcements-layout {
     flex-direction: column;
   }
   .sidebar {
-    flex: none;
     width: 100%;
   }
 }
