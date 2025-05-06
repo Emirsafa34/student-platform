@@ -29,7 +29,7 @@ if (token) {
   authStore.token = token;
   authStore.user = {
     username: localStorage.getItem('username'),
-    role:     localStorage.getItem('role'),
+    role: localStorage.getItem('role'),
   };
 }
 

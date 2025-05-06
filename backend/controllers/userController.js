@@ -30,7 +30,9 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
 exports.getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).select('-password');
   if (!user) {
-    return res.status(404).json({ success: false, message: 'Kullanıcı bulunamadı.' });
+    return res
+      .status(404)
+      .json({ success: false, message: 'Kullanıcı bulunamadı.' });
   }
   res.json({ success: true, user });
 });
@@ -40,19 +42,21 @@ exports.updateUser = asyncHandler(async (req, res) => {
   const { username, email } = req.body;
   const user = await User.findById(req.params.id);
   if (!user) {
-    return res.status(404).json({ success: false, message: 'Kullanıcı bulunamadı.' });
+    return res
+      .status(404)
+      .json({ success: false, message: 'Kullanıcı bulunamadı.' });
   }
   if (username) user.username = username;
-  if (email)    user.email    = email;
+  if (email) user.email = email;
   await user.save();
   res.json({
     success: true,
     user: {
-      id:       user._id,
+      id: user._id,
       username: user.username,
-      email:    user.email,
-      role:     user.role
-    }
+      email: user.email,
+      role: user.role,
+    },
   });
 });
 
@@ -60,7 +64,9 @@ exports.updateUser = asyncHandler(async (req, res) => {
 exports.deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (!user) {
-    return res.status(404).json({ success: false, message: 'Kullanıcı bulunamadı.' });
+    return res
+      .status(404)
+      .json({ success: false, message: 'Kullanıcı bulunamadı.' });
   }
   await user.remove();
   res.json({ success: true, message: 'Kullanıcı başarıyla silindi.' });
@@ -71,17 +77,19 @@ exports.updateUserRole = asyncHandler(async (req, res) => {
   const { role } = req.body; // 'user' veya 'admin'
   const user = await User.findById(req.params.id);
   if (!user) {
-    return res.status(404).json({ success: false, message: 'Kullanıcı bulunamadı.' });
+    return res
+      .status(404)
+      .json({ success: false, message: 'Kullanıcı bulunamadı.' });
   }
   user.role = role;
   await user.save();
   res.json({
     success: true,
     user: {
-      id:       user._id,
+      id: user._id,
       username: user.username,
-      email:    user.email,
-      role:     user.role
-    }
+      email: user.email,
+      role: user.role,
+    },
   });
 });

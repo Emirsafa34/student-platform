@@ -1,12 +1,13 @@
 <template>
   <div class="dashboard-page">
-
     <div class="dashboard-wrapper">
       <!-- Sol tarafta sabit yan menü -->
       <aside class="sidebar">
-        <router-link to="/announcements" class="sidebar-link">📰 Duyurular</router-link>
-        <router-link to="/courses"       class="sidebar-link">📚 Dersler</router-link>
-        <router-link to="/qas"           class="sidebar-link">❓ Soru-Cevap</router-link>
+        <router-link to="/announcements" class="sidebar-link"
+          >📰 Duyurular</router-link
+        >
+        <router-link to="/courses" class="sidebar-link">📚 Dersler</router-link>
+        <router-link to="/qas" class="sidebar-link">❓ Soru-Cevap</router-link>
       </aside>
 
       <!-- Sağ ana içerik -->
@@ -59,7 +60,9 @@
               @click="goToQAs"
             >
               <strong>{{ qa.question }}</strong>
-              <p class="meta">Ekleyen: {{ qa.createdBy?.username || 'Bilinmiyor' }}</p>
+              <p class="meta">
+                Ekleyen: {{ qa.createdBy?.username || 'Bilinmiyor' }}
+              </p>
             </li>
           </ul>
           <p v-else><em>Henüz soru yok.</em></p>
@@ -81,8 +84,8 @@ const router = useRouter();
 const user = { role: localStorage.getItem('role') };
 
 const latestAnnouncements = ref([]);
-const latestCourses       = ref([]);
-const latestQAs           = ref([]);
+const latestCourses = ref([]);
+const latestQAs = ref([]);
 
 onMounted(async () => {
   try {
@@ -109,11 +112,11 @@ onMounted(async () => {
 
 // Yönlendirme
 const goToAnnouncements = () => router.push('/announcements');
-const goToCourse        = (id) => {
+const goToCourse = (id) => {
   localStorage.setItem('selectedCourseId', id);
   router.push('/courses');
 };
-const goToQAs           = () => router.push('/qas');
+const goToQAs = () => router.push('/qas');
 
 // İçerikten kısa önizleme
 const snippet = (md) => {
@@ -121,7 +124,11 @@ const snippet = (md) => {
   return text.length > 80 ? text.slice(0, 80) + '…' : text;
 };
 const formatDate = (str) =>
-  new Date(str).toLocaleDateString('tr-TR', { year:'numeric', month:'short', day:'numeric' });
+  new Date(str).toLocaleDateString('tr-TR', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 </script>
 
 <style scoped>

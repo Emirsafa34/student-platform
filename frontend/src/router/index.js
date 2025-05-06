@@ -11,37 +11,37 @@ const routes = [
   // Ana sayfa (Dashboard) herkese açık
   {
     path: '/',
-    component: Dashboard
+    component: Dashboard,
   },
   // Giriş / Kayıt - navbar ve footer gizlenecek
   {
     path: '/login',
     component: Login,
-    meta: { hideNavbar: true, hideFooter: true }
+    meta: { hideNavbar: true, hideFooter: true },
   },
   {
     path: '/register',
     component: Register,
-    meta: { hideNavbar: true, hideFooter: true }
+    meta: { hideNavbar: true, hideFooter: true },
   },
   // Dashboard kısayolu
   {
     path: '/dashboard',
-    redirect: '/'
+    redirect: '/',
   },
   // Dersler ve Soru-Cevap herkes için açık
   {
     path: '/courses',
-    component: Courses
+    component: Courses,
   },
   {
     path: '/qas',
-    component: QAs
+    component: QAs,
   },
   {
     path: '/announcements',
-    component: Announcements
-  }
+    component: Announcements,
+  },
   // İleride korumak istediğin başka sayfalar olursa:
   // {
   //   path: '/secret',
@@ -56,7 +56,7 @@ const router = createRouter({
   scrollBehavior() {
     // Her sayfa geçişinde sayfa başına scroll
     return { top: 0 };
-  }
+  },
 });
 
 router.beforeEach((to, from, next) => {

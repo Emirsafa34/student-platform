@@ -7,19 +7,15 @@ import api from './api';
 
 // Tüm QA'ları getir – son X tanesini alabilir
 export function fetchQAs(limit = null) {
-  return api
-    .get('/qas')
-    .then(({ data }) => {
-      const all = data.qas || [];
-      return limit ? all.slice(-limit).reverse() : all;
-    });
+  return api.get('/qas').then(({ data }) => {
+    const all = data.qas || [];
+    return limit ? all.slice(-limit).reverse() : all;
+  });
 }
 
 // Yeni soru ekle
 export function addQuestion(payload) {
-  return api
-    .post('/qas', payload)
-    .then(({ data }) => data.qa);
+  return api.post('/qas', payload).then(({ data }) => data.qa);
 }
 
 // Cevap ekle
@@ -31,16 +27,12 @@ export function addAnswer(questionId, payload) {
 
 // QA güncelle
 export function updateQA(questionId, payload) {
-  return api
-    .put(`/qas/${questionId}`, payload)
-    .then(({ data }) => data.qa);
+  return api.put(`/qas/${questionId}`, payload).then(({ data }) => data.qa);
 }
 
 // QA sil (soft delete)
 export function deleteQuestion(questionId) {
-  return api
-    .delete(`/qas/${questionId}`)
-    .then(({ data }) => data.message);
+  return api.delete(`/qas/${questionId}`).then(({ data }) => data.message);
 }
 
 // Cevap sil

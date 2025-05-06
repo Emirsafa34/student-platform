@@ -8,18 +8,33 @@
         </a>
       </div>
       <div class="footer-box social-buttons">
-        <a href="https://facebook.com/YourPage" target="_blank" rel="noopener" aria-label="Facebook">
+        <a
+          href="https://facebook.com/YourPage"
+          target="_blank"
+          rel="noopener"
+          aria-label="Facebook"
+        >
           <i class="fab fa-facebook-f"></i>
         </a>
-        <a href="https://twitter.com/YourProfile" target="_blank" rel="noopener" aria-label="Twitter">
+        <a
+          href="https://twitter.com/YourProfile"
+          target="_blank"
+          rel="noopener"
+          aria-label="Twitter"
+        >
           <i class="fab fa-twitter"></i>
         </a>
-        <a href="https://instagram.com/YourProfile" target="_blank" rel="noopener" aria-label="Instagram">
+        <a
+          href="https://instagram.com/YourProfile"
+          target="_blank"
+          rel="noopener"
+          aria-label="Instagram"
+        >
           <i class="fab fa-instagram"></i>
         </a>
       </div>
       <div class="footer-box">
-        <p class="footer-rights">2025 CengRehber Proje Ekibi</p>
+        <p class="footer-rights">© 2025 CengRehber Proje Ekibi. Tüm hakları saklıdır.</p>
       </div>
     </div>
   </footer>

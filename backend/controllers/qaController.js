@@ -8,7 +8,7 @@ exports.createQA = asyncHandler(async (req, res) => {
   const { question } = req.body;
   const newQA = await QA.create({
     question,
-    createdBy: req.user._id
+    createdBy: req.user._id,
   });
   res.status(201).json({ success: true, qa: newQA });
 });
@@ -39,7 +39,10 @@ exports.updateQA = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Soru bulunamadı');
   }
-  if (qa.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+  if (
+    qa.createdBy.toString() !== req.user._id.toString() &&
+    req.user.role !== 'admin'
+  ) {
     res.status(403);
     throw new Error('Bu işlemi yapmaya yetkiniz yok');
   }
@@ -55,7 +58,9 @@ exports.deleteAnswer = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Soru bulunamadı');
   }
-  qa.answers = qa.answers.filter(ans => ans._id.toString() !== req.params.ansId);
+  qa.answers = qa.answers.filter(
+    (ans) => ans._id.toString() !== req.params.ansId
+  );
   await qa.save();
   res.status(200).json({ success: true, qa });
 });
@@ -67,11 +72,16 @@ exports.deleteQA = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Soru bulunamadı');
   }
-  if (qa.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+  if (
+    qa.createdBy.toString() !== req.user._id.toString() &&
+    req.user.role !== 'admin'
+  ) {
     res.status(403);
     throw new Error('Bu işlemi yapmaya yetkiniz yok');
   }
   qa.isDeleted = true;
   await qa.save();
-  res.status(200).json({ success: true, message: 'Soru başarıyla silindi (soft delete).' });
+  res
+    .status(200)
+    .json({ success: true, message: 'Soru başarıyla silindi (soft delete).' });
 });

@@ -33,7 +33,9 @@ exports.updateCourse = async (req, res, next) => {
       { new: true }
     );
     if (!updated)
-      return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Ders bulunamadı.' });
     res.status(200).json({ success: true, course: updated });
   } catch (err) {
     next(err);
@@ -45,10 +47,17 @@ exports.deleteCourse = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course)
-      return res.status(404).json({ success: false, message: 'Ders bulunamadı.' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Ders bulunamadı.' });
 
     await Course.findByIdAndUpdate(req.params.id, { isDeleted: true });
-    res.status(200).json({ success: true, message: 'Ders başarıyla silindi (soft delete).' });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: 'Ders başarıyla silindi (soft delete).',
+      });
   } catch (err) {
     next(err);
   }

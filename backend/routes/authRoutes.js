@@ -1,7 +1,7 @@
-const express  = require('express');
+const express = require('express');
 const { body } = require('express-validator');
 const { register, login } = require('../controllers/authController');
-const router   = express.Router();
+const router = express.Router();
 
 // Register
 router.post(
@@ -17,7 +17,7 @@ router.post(
       .normalizeEmail(),
     body('password')
       .isLength({ min: 6 })
-      .withMessage('Parola en az 6 karakter olmalı')
+      .withMessage('Parola en az 6 karakter olmalı'),
   ],
   register
 );
@@ -30,9 +30,7 @@ router.post(
       .isEmail()
       .withMessage('Geçerli bir email adresi giriniz')
       .normalizeEmail(),
-    body('password')
-      .notEmpty()
-      .withMessage('Parola alanı boş bırakılamaz')
+    body('password').notEmpty().withMessage('Parola alanı boş bırakılamaz'),
   ],
   login
 );

@@ -17,13 +17,14 @@ import Navbar from './components/Navbar.vue';
 import AppFooter from './components/Footer.vue';
 
 const route = useRoute();
-const showNavbar = computed(() =>
-  !['/login', '/register'].includes(route.path)
+const showNavbar = computed(
+  () => !['/login', '/register'].includes(route.path)
 );
 </script>
 
 <style>
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;

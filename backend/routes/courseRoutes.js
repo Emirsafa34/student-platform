@@ -25,8 +25,12 @@ router.post(
   adminOnly,
   [
     body('title').notEmpty().withMessage('Ders başlığı boş bırakılamaz'),
-    body('description').isLength({ min: 10 }).withMessage('Açıklama en az 10 karakter olmalı'),
-    body('grade').isInt({ min: 1, max: 4 }).withMessage('Sınıf 1 ile 4 arasında olmalı')
+    body('description')
+      .isLength({ min: 10 })
+      .withMessage('Açıklama en az 10 karakter olmalı'),
+    body('grade')
+      .isInt({ min: 1, max: 4 })
+      .withMessage('Sınıf 1 ile 4 arasında olmalı'),
   ],
   validate,
   courseController.createCourse
@@ -38,9 +42,18 @@ router.put(
   protect,
   adminOnly,
   [
-    body('title').optional().notEmpty().withMessage('Ders başlığı boş bırakılamaz'),
-    body('description').optional().isLength({ min: 10 }).withMessage('Açıklama en az 10 karakter olmalı'),
-    body('grade').optional().isInt({ min: 1, max: 4 }).withMessage('Sınıf 1 ile 4 arasında olmalı')
+    body('title')
+      .optional()
+      .notEmpty()
+      .withMessage('Ders başlığı boş bırakılamaz'),
+    body('description')
+      .optional()
+      .isLength({ min: 10 })
+      .withMessage('Açıklama en az 10 karakter olmalı'),
+    body('grade')
+      .optional()
+      .isInt({ min: 1, max: 4 })
+      .withMessage('Sınıf 1 ile 4 arasında olmalı'),
   ],
   validate,
   courseController.updateCourse

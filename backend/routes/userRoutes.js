@@ -6,7 +6,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
-  updateUserRole
+  updateUserRole,
 } = require('../controllers/userController');
 const { protect, adminOnly } = require('../middleware/authMiddleware');
 
@@ -23,8 +23,11 @@ router.put(
   '/:id',
   protect,
   [
-    body('username').optional().isString().withMessage('Geçersiz kullanıcı adı'),
-    body('email').optional().isEmail().withMessage('Geçersiz email adresi')
+    body('username')
+      .optional()
+      .isString()
+      .withMessage('Geçersiz kullanıcı adı'),
+    body('email').optional().isEmail().withMessage('Geçersiz email adresi'),
   ],
   (req, res, next) => {
     const errors = validationResult(req);
@@ -45,7 +48,7 @@ router.put(
   protect,
   adminOnly,
   body('role')
-    .isIn(['user','admin'])
+    .isIn(['user', 'admin'])
     .withMessage('Role sadece "user" veya "admin" olabilir'),
   (req, res, next) => {
     const errors = validationResult(req);

@@ -22,7 +22,7 @@ router.get('/', qaController.getAllQA);
 router.post(
   '/',
   protect,
-  [ body('question').notEmpty().withMessage('Soru metni boş bırakılamaz') ],
+  [body('question').notEmpty().withMessage('Soru metni boş bırakılamaz')],
   validate,
   qaController.createQA
 );
@@ -31,19 +31,29 @@ router.post(
 router.post(
   '/:id/answers',
   protect,
-  [ body('text').notEmpty().withMessage('Cevap metni boş bırakılamaz') ],
+  [body('text').notEmpty().withMessage('Cevap metni boş bırakılamaz')],
   validate,
   qaController.addAnswer
 );
 
 // Delete an answer (admin only)
-router.delete('/:qId/answers/:ansId', protect, adminOnly, qaController.deleteAnswer);
+router.delete(
+  '/:qId/answers/:ansId',
+  protect,
+  adminOnly,
+  qaController.deleteAnswer
+);
 
 // Update a question
 router.put(
   '/:id',
   protect,
-  [ body('question').optional().notEmpty().withMessage('Soru metni boş bırakılamaz') ],
+  [
+    body('question')
+      .optional()
+      .notEmpty()
+      .withMessage('Soru metni boş bırakılamaz'),
+  ],
   validate,
   qaController.updateQA
 );

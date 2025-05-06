@@ -2,18 +2,11 @@
   <div class="courses-view-container">
     <!-- Admin Form -->
     <div v-if="isAdmin" class="admin-form">
-      <button
-        class="btn-add-course"
-        @click="openForm"
-      >
+      <button class="btn-add-course" @click="openForm">
         {{ editingId ? 'Düzenleme Modu' : 'Yeni Ders Ekle' }}
       </button>
       <div v-if="showForm" class="form">
-        <input
-          v-model="form.title"
-          placeholder="Ders Başlığı"
-          required
-        />
+        <input v-model="form.title" placeholder="Ders Başlığı" required />
         <textarea
           v-model="form.description"
           placeholder="Açıklama"
@@ -22,11 +15,9 @@
         ></textarea>
         <select v-model="form.grade" required>
           <option disabled value="">— Sınıf Seçin —</option>
-          <option
-            v-for="g in grades"
-            :key="g"
-            :value="g"
-          >{{ g }}. Sınıf</option>
+          <option v-for="g in grades" :key="g" :value="g">
+            {{ g }}. Sınıf
+          </option>
         </select>
         <select v-model="form.term" required>
           <option disabled value="">— Dönem Seçin —</option>
@@ -37,10 +28,7 @@
           v-model="form.thumbnailUrl"
           placeholder="Resim URL (opsiyonel)"
         />
-        <input
-          v-model="form.pdfUrl"
-          placeholder="PDF URL (opsiyonel)"
-        />
+        <input v-model="form.pdfUrl" placeholder="PDF URL (opsiyonel)" />
         <input
           v-model="form.youtubePlaylist"
           placeholder="YouTube URL (opsiyonel)"
@@ -49,16 +37,16 @@
           <button
             class="btn-add-course"
             @click="saveCourse"
-            :disabled="!form.title.trim() || !form.description.trim() || !form.grade || !form.term"
+            :disabled="
+              !form.title.trim() ||
+              !form.description.trim() ||
+              !form.grade ||
+              !form.term
+            "
           >
             Kaydet
           </button>
-          <button
-            class="btn-cancel"
-            @click="cancelForm"
-          >
-            İptal
-          </button>
+          <button class="btn-cancel" @click="cancelForm">İptal</button>
         </div>
       </div>
     </div>
@@ -82,15 +70,10 @@
       <div v-if="selectedCourse.pdfUrl">
         <h4>PDF Dokümanlar</h4>
         <ul>
-          <li
-            v-for="url in arrayify(selectedCourse.pdfUrl)"
-            :key="url"
-          >
-            <a
-              :href="url"
-              target="_blank"
-              rel="noopener"
-            >{{ fileName(url) }}</a>
+          <li v-for="url in arrayify(selectedCourse.pdfUrl)" :key="url">
+            <a :href="url" target="_blank" rel="noopener">{{
+              fileName(url)
+            }}</a>
           </li>
         </ul>
       </div>
@@ -114,11 +97,7 @@
 
     <!-- Sınıf Panelleri -->
     <div v-else class="grade-panels">
-      <div
-        v-for="grade in grades"
-        :key="grade"
-        class="grade-panel"
-      >
+      <div v-for="grade in grades" :key="grade" class="grade-panel">
         <h3>{{ grade }}. Sınıf</h3>
         <ul>
           <li
@@ -126,10 +105,9 @@
             :key="c._id"
             class="course-item"
           >
-            <button
-              class="course-btn"
-              @click="selectCourse(c)"
-            >{{ c.title }}</button>
+            <button class="course-btn" @click="selectCourse(c)">
+              {{ c.title }}
+            </button>
             <span v-if="isAdmin" class="list-actions">
               <button @click.stop="enterEditMode(c)">✎</button>
               <button @click.stop="deleteCourse(c._id)">🗑</button>
@@ -151,7 +129,7 @@ import {
   fetchCourses,
   createCourse,
   updateCourse,
-  removeCourse
+  removeCourse,
 } from '../services/courseService';
 
 const isAdmin = computed(() => localStorage.getItem('role') === 'admin');
@@ -168,7 +146,7 @@ const form = ref({
   term: '',
   thumbnailUrl: '',
   pdfUrl: '',
-  youtubePlaylist: ''
+  youtubePlaylist: '',
 });
 
 async function load() {
@@ -177,16 +155,16 @@ async function load() {
 }
 onMounted(load);
 
-const coursesByGrade = g =>
-  courses.value.filter(c => Number(c.grade) === g);
+const coursesByGrade = (g) =>
+  courses.value.filter((c) => Number(c.grade) === g);
 
-const arrayify = x => Array.isArray(x) ? x : [x];
-const fileName = url => url.split('/').pop();
-const embedUrl = url => {
+const arrayify = (x) => (Array.isArray(x) ? x : [x]);
+const fileName = (url) => url.split('/').pop();
+const embedUrl = (url) => {
   const m = url.match(/(?:v=|\.be\/|embed\/)([^&?]+)/);
   return m ? `https://www.youtube.com/embed/${m[1]}` : url;
 };
-const renderMarkdown = text => marked.parse(text || '');
+const renderMarkdown = (text) => marked.parse(text || '');
 
 function selectCourse(c) {
   selectedCourse.value = c;
@@ -203,7 +181,7 @@ function openForm() {
       term: '',
       thumbnailUrl: '',
       pdfUrl: '',
-      youtubePlaylist: ''
+      youtubePlaylist: '',
     });
   }
 }
@@ -254,7 +232,9 @@ async function deleteCourse(id) {
 .course-detail-overlay {
   position: fixed;
   top: var(--navbar-height);
-  left: 0; right: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: var(--color-card-bg);
   color: var(--color-text);
   padding: var(--spacing);
@@ -282,8 +262,10 @@ async function deleteCourse(id) {
 }
 .video-wrapper iframe {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border: 0;
 }
 .grade-panels {
@@ -301,7 +283,7 @@ async function deleteCourse(id) {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: var(--spacing);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 @media (max-width: 768px) {
   .grade-panels {
@@ -360,9 +342,10 @@ async function deleteCourse(id) {
   padding: 0.5rem 1rem;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: background-color var(--transition-fast),
-              transform var(--transition-fast),
-              color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast),
+    color var(--transition-fast);
 }
 .btn-cancel:hover {
   background-color: var(--color-primary);

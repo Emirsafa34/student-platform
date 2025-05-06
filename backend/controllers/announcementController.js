@@ -5,8 +5,7 @@ const Announcement = require('../models/Announcement');
 // 📥 Herkes görebilsin
 exports.getAnnouncements = async (req, res, next) => {
   try {
-    const list = await Announcement
-      .find({ isDeleted: false })
+    const list = await Announcement.find({ isDeleted: false })
       .sort({ createdAt: -1 })
       .populate('createdBy', 'username');
     res.json({ success: true, announcements: list });
@@ -21,7 +20,7 @@ exports.createAnnouncement = async (req, res, next) => {
     const newAnn = new Announcement({
       title: req.body.title,
       content: req.body.content,
-      createdBy: req.user._id
+      createdBy: req.user._id,
     });
     const saved = await newAnn.save();
     res.status(201).json({ success: true, announcement: saved });
@@ -38,7 +37,10 @@ exports.updateAnnouncement = async (req, res, next) => {
       { title: req.body.title, content: req.body.content },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ success: false, message: 'Duyuru bulunamadı' });
+    if (!updated)
+      return res
+        .status(404)
+        .json({ success: false, message: 'Duyuru bulunamadı' });
     res.json({ success: true, announcement: updated });
   } catch (err) {
     next(err);
@@ -49,7 +51,10 @@ exports.updateAnnouncement = async (req, res, next) => {
 exports.deleteAnnouncement = async (req, res, next) => {
   try {
     const ann = await Announcement.findById(req.params.id);
-    if (!ann) return res.status(404).json({ success: false, message: 'Duyuru bulunamadı' });
+    if (!ann)
+      return res
+        .status(404)
+        .json({ success: false, message: 'Duyuru bulunamadı' });
     ann.isDeleted = true;
     await ann.save();
     res.json({ success: true, message: 'Duyuru silindi' });

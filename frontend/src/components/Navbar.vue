@@ -2,7 +2,11 @@
   <nav class="navbar animate-fadeIn">
     <div class="navbar-left">
       <router-link to="/" class="navbar-logo-link">
-        <img class="logo" src="http://ceng1.cumhuriyet.edu.tr/images/logo2.png" alt="Logo" />
+        <img
+          class="logo"
+          src="http://ceng1.cumhuriyet.edu.tr/images/logo2.png"
+          alt="Logo"
+        />
         <span class="site-name">Ceng Rehber</span>
       </router-link>
     </div>
@@ -14,11 +18,24 @@
       <router-link to="/" @click="closeMenu">Anasayfa</router-link>
       <router-link to="/courses" @click="closeMenu">Dersler</router-link>
       <router-link to="/qas" @click="closeMenu">Soru-Cevap</router-link>
-      <router-link to="/announcements" @click="closeMenu">Duyurular</router-link> <!-- ✅ EKLENDİ -->
+      <router-link to="/announcements" @click="closeMenu"
+        >Duyurular</router-link
+      >
+      <!-- ✅ EKLENDİ -->
 
-      <router-link v-if="!authStore.isAuthenticated" to="/login" @click="closeMenu">🔐 Giriş Yap</router-link>
-      <router-link v-if="!authStore.isAuthenticated" to="/register" @click="closeMenu">📝 Kayıt Ol</router-link>
-      
+      <router-link
+        v-if="!authStore.isAuthenticated"
+        to="/login"
+        @click="closeMenu"
+        >🔐 Giriş Yap</router-link
+      >
+      <router-link
+        v-if="!authStore.isAuthenticated"
+        to="/register"
+        @click="closeMenu"
+        >📝 Kayıt Ol</router-link
+      >
+
       <template v-if="authStore.isAuthenticated">
         <span class="user-info">👤 {{ authStore.user.username }}</span>
         <button class="mobile-logout-btn" @click="handleLogout">Çıkış</button>
@@ -33,12 +50,25 @@
       <span class="divider">|</span>
       <router-link to="/qas">Soru-Cevap</router-link>
       <span class="divider">|</span>
-      <router-link to="/announcements">Duyurular</router-link> <!-- ✅ EKLENDİ -->
+      <router-link to="/announcements">Duyurular</router-link>
+      <!-- ✅ EKLENDİ -->
     </div>
 
     <div class="navbar-right desktop-only">
-      <router-link v-if="!authStore.isAuthenticated" to="/login" class="nav-icon" title="Giriş Yap">🔐</router-link>
-      <router-link v-if="!authStore.isAuthenticated" to="/register" class="nav-icon" title="Kayıt Ol">📝</router-link>
+      <router-link
+        v-if="!authStore.isAuthenticated"
+        to="/login"
+        class="nav-icon"
+        title="Giriş Yap"
+        >🔐</router-link
+      >
+      <router-link
+        v-if="!authStore.isAuthenticated"
+        to="/register"
+        class="nav-icon"
+        title="Kayıt Ol"
+        >📝</router-link
+      >
       <template v-if="authStore.isAuthenticated">
         <span class="user-info">👤 {{ authStore.user.username }}</span>
         <button @click="handleLogout">Çıkış</button>

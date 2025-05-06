@@ -6,7 +6,9 @@
   "scripts": {
     "frontend": "cd frontend && npm run dev",
     "backend": "cd backend && npm run dev",
-    "dev": "echo \"Please run npm run frontend or npm run backend separately\""
+    "dev": "echo \"Please run npm run frontend or npm run backend separately\"",
+    "lint": "eslint \"**/*.{js,vue}\" --quiet",
+    "format": "prettier --write \"**/*.{js,vue,json,md}\""
   },
   "repository": {
     "type": "git",

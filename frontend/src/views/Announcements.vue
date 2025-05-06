@@ -6,10 +6,7 @@
       <!-- Sol panel: Admin duyuru ekleme formu -->
       <aside v-if="isAdmin" class="sidebar announcement-form">
         <h3>Yeni Duyuru Ekle</h3>
-        <input
-          v-model="form.title"
-          placeholder="Başlık"
-        />
+        <input v-model="form.title" placeholder="Başlık" />
         <textarea
           v-model="form.content"
           rows="4"
@@ -27,11 +24,7 @@
       <!-- Sağ panel: Liste + sayfalama -->
       <section class="content">
         <div v-if="paged.length">
-          <div
-            v-for="ann in paged"
-            :key="ann._id"
-            class="announcement-card"
-          >
+          <div v-for="ann in paged" :key="ann._id" class="announcement-card">
             <h3>{{ ann.title }}</h3>
             <!-- Burada Markdown içeriği render ediliyor -->
             <div
@@ -54,17 +47,17 @@
         <p v-else><em>Henüz duyuru yok.</em></p>
 
         <div class="pagination">
-          <button
-            class="page-btn"
-            @click="goPrev"
-            :disabled="page === 1"
-          >‹ Önceki</button>
+          <button class="page-btn" @click="goPrev" :disabled="page === 1">
+            ‹ Önceki
+          </button>
           <span>Sayfa {{ page }} / {{ totalPages }}</span>
           <button
             class="page-btn"
             @click="goNext"
             :disabled="page === totalPages"
-          >Sonraki ›</button>
+          >
+            Sonraki ›
+          </button>
         </div>
       </section>
     </div>
@@ -73,12 +66,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { marked } from 'marked';  // Markdown için
+import { marked } from 'marked'; // Markdown için
 import {
   fetchAnnouncements,
   createAnnouncement,
-  removeAnnouncement
-} from '@/services/announcementService';  // :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+  removeAnnouncement,
+} from '@/services/announcementService'; // :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
 
 const form = ref({ title: '', content: '' });
 const all = ref([]);
@@ -114,15 +107,21 @@ const deleteAnnouncement = async (id) => {
   await load();
 };
 
-const goPrev = () => { if (page.value > 1) page.value--; };
-const goNext = () => { if (page.value < totalPages.value) page.value++; };
+const goPrev = () => {
+  if (page.value > 1) page.value--;
+};
+const goNext = () => {
+  if (page.value < totalPages.value) page.value++;
+};
 
 // Markdown işleyici
 const renderMarkdown = (text) => marked.parse(text || '');
 // Tarih formatlama
 const formatDate = (s) =>
   new Date(s).toLocaleDateString('tr-TR', {
-    year: 'numeric', month: 'short', day: 'numeric'
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   });
 </script>
 

@@ -9,12 +9,18 @@ export const useCourseStore = defineStore('course', {
     pages: 1,
     total: 0,
     limit: 10,
-    search: ''
+    search: '',
   }),
   actions: {
     // Kursları sayfalı ve filtreli şekilde çek
-    async fetchCourses({ page = this.page, limit = this.limit, search = this.search } = {}) {
-      const { data } = await api.get('/courses', { params: { page, limit, search } });
+    async fetchCourses({
+      page = this.page,
+      limit = this.limit,
+      search = this.search,
+    } = {}) {
+      const { data } = await api.get('/courses', {
+        params: { page, limit, search },
+      });
       this.courses = data.courses;
       this.page = data.page;
       this.pages = data.pages;
@@ -22,7 +28,9 @@ export const useCourseStore = defineStore('course', {
     },
     // Yeni kurs ekle ve listeyi güncelle
     async addCourse(payload) {
-      const { course } = await api.post('/courses', payload).then(res => res.data);
+      const { course } = await api
+        .post('/courses', payload)
+        .then((res) => res.data);
       // Sayfalı yapıda ekleme sonrası yeniden fetch yapmak daha sağlıklı olabilir
       await this.fetchCourses();
     },
@@ -43,6 +51,6 @@ export const useCourseStore = defineStore('course', {
         this.page = page;
         this.fetchCourses();
       }
-    }
-  }
+    },
+  },
 });

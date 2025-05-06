@@ -36,7 +36,7 @@
           />
         </div>
         <button class="auth-button" :disabled="loading">
-          {{ loading ? "Bekleyin..." : "Kayıt Ol" }}
+          {{ loading ? 'Bekleyin...' : 'Kayıt Ol' }}
         </button>
         <p v-if="error" class="error">{{ error }}</p>
       </form>
@@ -50,23 +50,23 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "../stores/auth";
-import { register } from "../services/authService";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
+import { register } from '../services/authService';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
-const username = ref("");
-const email = ref("");
-const password = ref("");
+const username = ref('');
+const email = ref('');
+const password = ref('');
 const loading = ref(false);
-const error = ref("");
+const error = ref('');
 
 const handleRegister = async () => {
   loading.value = true;
-  error.value = "";
+  error.value = '';
   try {
     // backend tarafı her zaman role: 'user' atayacak
     const { token, user } = await register({
@@ -76,18 +76,17 @@ const handleRegister = async () => {
     });
     authStore.user = user;
     authStore.token = token;
-    localStorage.setItem("token", token);
-    localStorage.setItem("username", user.username);
-    localStorage.setItem("role", user.role);
-    router.push(user.role === "admin" ? "/dashboard" : "/qas");
+    localStorage.setItem('token', token);
+    localStorage.setItem('username', user.username);
+    localStorage.setItem('role', user.role);
+    router.push(user.role === 'admin' ? '/dashboard' : '/qas');
   } catch (err) {
-    error.value = err.message || "Kayıt başarısız. Bilgileri kontrol edin.";
+    error.value = err.message || 'Kayıt başarısız. Bilgileri kontrol edin.';
   } finally {
     loading.value = false;
   }
 };
 </script>
-
 
 <style scoped>
 .auth-page {

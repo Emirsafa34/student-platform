@@ -16,16 +16,16 @@ const CourseSchema = new mongoose.Schema(
     grade: {
       type: Number,
       required: [true, 'Sınıf bilgisi zorunlu'],
-      enum: [1, 2, 3, 4]
+      enum: [1, 2, 3, 4],
     },
-    
+
     // ✅ Yeni alan: Güz / Bahar dönemi
     term: {
       type: String,
       required: [true, 'Dönem bilgisi zorunlu'],
       enum: ['güz', 'bahar'],
       lowercase: true,
-      trim: true
+      trim: true,
     },
 
     thumbnailUrl: {

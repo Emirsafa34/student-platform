@@ -1,8 +1,8 @@
 // controllers/authController.js
 require('dotenv').config();
-const jwt                  = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
-const User                 = require('../models/User');
+const User = require('../models/User');
 
 const { JWT_SECRET, JWT_EXPIRES_IN } = process.env;
 
@@ -34,7 +34,7 @@ exports.register = async (req, res, next) => {
       username,
       email,
       password,
-      role: 'user'
+      role: 'user',
     });
     await user.save();
 
@@ -46,11 +46,11 @@ exports.register = async (req, res, next) => {
       success: true,
       token,
       user: {
-        id:       user._id,
+        id: user._id,
         username: user.username,
-        email:    user.email,
-        role:     user.role
-      }
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (err) {
     next(err);
@@ -88,11 +88,11 @@ exports.login = async (req, res, next) => {
       success: true,
       token,
       user: {
-        id:       user._id,
+        id: user._id,
         username: user.username,
-        email:    user.email,
-        role:     user.role
-      }
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (err) {
     next(err);
