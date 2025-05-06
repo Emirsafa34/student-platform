@@ -1,4 +1,4 @@
-// backend/models/QA.js
+// backend/models/Qa.js
 
 const mongoose = require('mongoose');
 
@@ -47,4 +47,4 @@ const QASchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('QA', QASchema);
+module.exports = mongoose.model('Qa', QASchema);
