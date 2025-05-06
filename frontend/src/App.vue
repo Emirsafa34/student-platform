@@ -6,7 +6,7 @@
       <router-view />
     </main>
 
-    <Footer />
+    <AppFooter />
   </div>
 </template>
 
@@ -14,7 +14,7 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import Navbar from './components/Navbar.vue';
-import Footer from './components/Footer.vue';
+import AppFooter from './components/Footer.vue';
 
 const route = useRoute();
 const showNavbar = computed(() =>
@@ -38,5 +38,6 @@ html, body {
 .main-content {
   flex: 1;
   padding: 1rem;
+  margin-top: var(--navbar-height);
 }
 </style>

@@ -8,7 +8,10 @@ import App from './App.vue';
 
 // Global stiller: önce tema, sonra varsa ekstra stil
 import './assets/styles/variables.css';
-import './style.css'; 
+import './style.css';
+
+// Font Awesome ikon kütüphanesini dahil ediyoruz
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const app = createApp(App);
 

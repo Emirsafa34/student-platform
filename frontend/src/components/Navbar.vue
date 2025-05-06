@@ -21,7 +21,7 @@
       
       <template v-if="authStore.isAuthenticated">
         <span class="user-info">👤 {{ authStore.user.username }}</span>
-        <button @click="handleLogout">Çıkış</button>
+        <button class="mobile-logout-btn" @click="handleLogout">Çıkış</button>
       </template>
     </div>
 

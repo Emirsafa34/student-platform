@@ -1,24 +1,43 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-import Register  from '../views/Register.vue';
-import Login     from '../views/Login.vue';
+import Register from '../views/Register.vue';
+import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
-import Courses   from '../views/Courses.vue';
-import QAs       from '../views/QAs.vue';
+import Courses from '../views/Courses.vue';
+import QAs from '../views/QAs.vue';
 import Announcements from '../views/Announcements.vue';
-
 
 const routes = [
   // Ana sayfa (Dashboard) herkese açık
-  { path: '/',         component: Dashboard },
-  // Giriş / Kayıt
-  { path: '/login',    component: Login },
-  { path: '/register', component: Register },
+  {
+    path: '/',
+    component: Dashboard
+  },
+  // Giriş / Kayıt - navbar ve footer gizlenecek
+  {
+    path: '/login',
+    component: Login,
+    meta: { hideNavbar: true, hideFooter: true }
+  },
+  {
+    path: '/register',
+    component: Register,
+    meta: { hideNavbar: true, hideFooter: true }
+  },
   // Dashboard kısayolu
-  { path: '/dashboard', redirect: '/' },
+  {
+    path: '/dashboard',
+    redirect: '/'
+  },
   // Dersler ve Soru-Cevap herkes için açık
-  { path: '/courses',  component: Courses },
-  { path: '/qas',      component: QAs },
+  {
+    path: '/courses',
+    component: Courses
+  },
+  {
+    path: '/qas',
+    component: QAs
+  },
   {
     path: '/announcements',
     component: Announcements
@@ -34,6 +53,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior() {
+    // Her sayfa geçişinde sayfa başına scroll
+    return { top: 0 };
+  }
 });
 
 router.beforeEach((to, from, next) => {

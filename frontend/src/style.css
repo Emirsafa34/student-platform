@@ -6,6 +6,8 @@
   --color-text:       #000000;
   --color-primary:    #1e3a8a;
   --color-primary-hover: #142e6b;
+  --color-secondary:  #0077b5;
+  --color-light:      #ffffff;
   --color-muted:      #6b7280;
   --color-card-bg:    #ffffff;
   --color-border:     #e5e7eb;
@@ -16,9 +18,7 @@
 }
 
 /* Reset ve global ayarlar */
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 html, body {
@@ -30,7 +30,7 @@ html, body {
   color: var(--color-text);
 }
 
-/* App container için */
+/* App container */
 #app {
   display: flex;
   flex-direction: column;
@@ -55,29 +55,26 @@ html, body {
   align-items: center;
 }
 .nav-center { flex: 1; justify-content: center; gap: 2rem; }
-.nav-left  { gap: 1rem; }
-.nav-right { gap: 1rem; }
+.nav-left, .nav-right { gap: 1rem; }
 .navbar a {
-  color: var(--color-text);
+  color: var(--color-light);
   text-decoration: none;
   font-weight: 500;
   transition: color var(--transition-fast);
 }
 .navbar a:hover { color: var(--color-bg); }
 .navbar button {
-  background-color: var(--color-text);
+  background-color: var(--color-light);
   border: none;
-  color: var(--color-light);
+  color: var(--color-primary);
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius);
   cursor: pointer;
   transition: background-color var(--transition-fast);
 }
-.navbar button:hover {
-  background-color: var(--color-primary-hover);
-}
+.navbar button:hover { background-color: var(--color-primary-hover); }
 
-/* İçerik alanı */
+/* Main content */
 .main-content {
   margin-top: var(--navbar-height);
   flex: 1;
@@ -120,31 +117,34 @@ html, body {
   margin-bottom: var(--spacing);
 }
 .course-image {
-  width: 50%;
+  width: 100%;
   max-height: 200px;
-  object-fit: none;
-  margin: var(--spacing) 20;
+  object-fit: cover;
+  margin: var(--spacing) 0;
 }
 .video-wrapper {
   position: relative;
-  padding-bottom: 20%;
+  padding-bottom: 56.25%;
   margin-top: var(--spacing);
 }
 .video-wrapper iframe {
-  position: relative;
-  top: 10; left: 20;
-  width: 50%; height: 50%;
-  border: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 /* Footer */
 .footer {
   background-color: var(--color-primary);
   color: var(--color-light);
-  padding: 0.75rem 0;
+  padding: 1rem 0;
   margin-top: auto;
   font-family: var(--font-family);
   font-size: 0.9rem;
+  text-align: center;
 }
 .footer a {
   color: var(--color-light);
@@ -152,6 +152,23 @@ html, body {
 }
 .footer a:hover {
   color: var(--color-secondary);
+}
+.footer .social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing);
+  margin-bottom: 0.5rem;
+}
+.footer .social-buttons a {
+  font-size: 1.2rem;
+  transition: color var(--transition-fast);
+}
+.footer .social-buttons a:hover {
+  color: var(--color-secondary);
+}
+.footer-text {
+  margin-top: 0.25rem;
+  color: var(--color-muted);
 }
 
 /* Responsive */
@@ -166,7 +183,21 @@ html, body {
     padding: 0 0.5rem;
   }
   .footer {
-    text-align: center;
     flex-direction: column;
   }
+}
+
+/* Mobil menüdeki “Çıkış” butonu */
+.mobile-logout-btn {
+  background-color: transparent !important;
+  border: none !important;
+  color: var(--color-light) !important;
+  font-size: 1.1rem;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+}
+
+.mobile-logout-btn:hover {
+  color: var(--color-secondary) !important;
 }
