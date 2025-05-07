@@ -23,7 +23,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // CORS configuration
-// CORS_ORIGIN env var'ında virgülle ayrılmış origin listesi olabilir
 const fallbackOrigins = [
   'http://localhost:5173',
   'https://student-platform-frontend.onrender.com'
@@ -32,18 +31,25 @@ const allowedOrigins = (process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',')
   : fallbackOrigins
 );
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`Origin ${origin} not allowed by CORS`));
-      }
-    },
-    credentials: true
-  })
-);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+// Preflight isteklere yanıt
+app.options('*', cors(corsOptions));
+
+// Tüm isteklere CORS middleware'i uygula
+app.use(cors(corsOptions));
 
 // JSON parsing
 app.use(express.json());
