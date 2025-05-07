@@ -4,7 +4,7 @@
       <router-link to="/" class="navbar-logo-link">
         <img
           class="logo"
-          src="/logo2.png"
+          src="/logo.png"
           alt="Logo"
         />
         <span class="site-name">Ceng Rehber</span>
@@ -18,33 +18,27 @@
       <router-link to="/" @click="closeMenu">Anasayfa</router-link>
       <router-link to="/courses" @click="closeMenu">Dersler</router-link>
       <router-link to="/qas" @click="closeMenu">Soru-Cevap</router-link>
-      <router-link to="/announcements" @click="closeMenu">Duyurular</router-link>
+      <router-link to="/announcements" @click="closeMenu"
+        >Duyurular</router-link
+      >
+      <!-- ✅ EKLENDİ -->
 
       <router-link
         v-if="!authStore.isAuthenticated"
         to="/login"
         @click="closeMenu"
+        >🔐 Giriş Yap</router-link
       >
-        🔐 Giriş Yap
-      </router-link>
       <router-link
         v-if="!authStore.isAuthenticated"
         to="/register"
         @click="closeMenu"
+        >📝 Kayıt Ol</router-link
       >
-        📝 Kayıt Ol
-      </router-link>
 
       <template v-if="authStore.isAuthenticated">
-        <span class="user-info">
-          👤 {{ authStore.user.username }}
-        </span>
-        <button
-          class="mobile-logout-btn"
-          @click="handleLogout"
-        >
-          Çıkış
-        </button>
+        <span class="user-info">👤 {{ authStore.user.username }}</span>
+        <button class="mobile-logout-btn" @click="handleLogout">Çıkış</button>
       </template>
     </div>
 
@@ -57,6 +51,7 @@
       <router-link to="/qas">Soru-Cevap</router-link>
       <span class="divider">|</span>
       <router-link to="/announcements">Duyurular</router-link>
+      <!-- ✅ EKLENDİ -->
     </div>
 
     <div class="navbar-right desktop-only">
@@ -65,17 +60,15 @@
         to="/login"
         class="nav-icon"
         title="Giriş Yap"
+        >🔐</router-link
       >
-        🔐
-      </router-link>
       <router-link
         v-if="!authStore.isAuthenticated"
         to="/register"
         class="nav-icon"
         title="Kayıt Ol"
+        >📝</router-link
       >
-        📝
-      </router-link>
       <template v-if="authStore.isAuthenticated">
         <span class="user-info">👤 {{ authStore.user.username }}</span>
         <button @click="handleLogout">Çıkış</button>
@@ -96,12 +89,8 @@ const menuOpen = ref(false);
 const authStore = useAuthStore();
 const router = useRouter();
 
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value;
-};
-const closeMenu = () => {
-  menuOpen.value = false;
-};
+const toggleMenu = () => (menuOpen.value = !menuOpen.value);
+const closeMenu = () => (menuOpen.value = false);
 
 function handleLogout() {
   authStore.logout();
@@ -126,12 +115,10 @@ function handleLogout() {
   align-items: center;
   text-decoration: none;
 }
-
 .logo {
   width: 180px;
   height: auto;
 }
-
 .site-name {
   margin-left: 0.75rem;
   font-family: var(--font-logo);
@@ -146,7 +133,6 @@ function handleLogout() {
   align-items: center;
   gap: 1.5rem;
 }
-
 .navbar-center a,
 .navbar-right a {
   color: var(--color-light);
@@ -154,21 +140,17 @@ function handleLogout() {
   font-weight: 500;
   text-decoration: none;
 }
-
 .navbar-center a:hover,
 .navbar-right a:hover {
   color: var(--color-secondary);
 }
-
 .divider {
   color: var(--color-light);
 }
-
 .nav-icon {
   font-size: 1.5rem;
   color: var(--color-light);
 }
-
 button {
   background: none;
   border: 1px solid var(--color-light);
@@ -177,12 +159,10 @@ button {
   border-radius: var(--radius);
   cursor: pointer;
 }
-
 button:hover {
   background: var(--color-secondary);
   transform: translateY(-2px);
 }
-
 .user-info {
   color: var(--color-light);
   font-family: var(--font-base);
@@ -212,11 +192,9 @@ button:hover {
   transition: transform 0.3s ease-in-out;
   z-index: 999;
 }
-
 .mobile-menu.open {
   transform: translateX(0);
 }
-
 .mobile-menu a,
 .mobile-menu button {
   color: var(--color-light);
@@ -224,7 +202,6 @@ button:hover {
   font-size: 1.1rem;
   font-family: var(--font-base);
 }
-
 .mobile-menu button {
   border: 1px solid var(--color-light);
   padding: 6px 12px;
@@ -244,16 +221,14 @@ button:hover {
   .hamburger {
     display: block;
   }
-
   .desktop-only {
     display: none;
   }
-
   .logo {
     width: 120px;
   }
-
   .site-name {
     font-size: 1.25rem;
   }
 }
+</style>
