@@ -2,8 +2,13 @@
 
 import axios from 'axios';
 
-// Çevresel değişkenden backend URL’ini al, tanımlı değilse localhost’a düş
-const host = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Çevresel değişkenden backend URL’ini al, tanımlı değilse hata ver
+const host = import.meta.env.VITE_API_URL;
+if (!host) {
+  throw new Error(
+    'VITE_API_URL environment variable is not defined. Please set it to your backend URL.'
+  );
+}
 
 // Axios örneğini oluştur
 const api = axios.create({
@@ -37,7 +42,7 @@ api.interceptors.response.use(
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         window.location.href = '/login';
-        return; // yönlendirme sonrası daha fazla işleme gerek yok
+        return;
       }
 
       // Diğer hata durumlarında API error objesini fırlat

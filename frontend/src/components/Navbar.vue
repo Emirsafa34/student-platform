@@ -4,7 +4,7 @@
       <router-link to="/" class="navbar-logo-link">
         <img
           class="logo"
-          src="/logo.png"
+          src="/logo2.png"
           alt="Logo"
         />
         <span class="site-name">Ceng Rehber</span>
@@ -18,23 +18,19 @@
       <router-link to="/" @click="closeMenu">Anasayfa</router-link>
       <router-link to="/courses" @click="closeMenu">Dersler</router-link>
       <router-link to="/qas" @click="closeMenu">Soru-Cevap</router-link>
-      <router-link to="/announcements" @click="closeMenu"
-        >Duyurular</router-link
-      >
+      <router-link to="/announcements" @click="closeMenu">Duyurular</router-link>
       <!-- ✅ EKLENDİ -->
 
       <router-link
         v-if="!authStore.isAuthenticated"
         to="/login"
         @click="closeMenu"
-        >🔐 Giriş Yap</router-link
-      >
+      >🔐 Giriş Yap</router-link>
       <router-link
         v-if="!authStore.isAuthenticated"
         to="/register"
         @click="closeMenu"
-        >📝 Kayıt Ol</router-link
-      >
+      >📝 Kayıt Ol</router-link>
 
       <template v-if="authStore.isAuthenticated">
         <span class="user-info">👤 {{ authStore.user.username }}</span>
@@ -60,15 +56,13 @@
         to="/login"
         class="nav-icon"
         title="Giriş Yap"
-        >🔐</router-link
-      >
+      >🔐</router-link>
       <router-link
         v-if="!authStore.isAuthenticated"
         to="/register"
         class="nav-icon"
         title="Kayıt Ol"
-        >📝</router-link
-      >
+      >📝</router-link>
       <template v-if="authStore.isAuthenticated">
         <span class="user-info">👤 {{ authStore.user.username }}</span>
         <button @click="handleLogout">Çıkış</button>
@@ -231,4 +225,3 @@ button:hover {
     font-size: 1.25rem;
   }
 }
-</style>
