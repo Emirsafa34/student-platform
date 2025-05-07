@@ -4,7 +4,7 @@
       <router-link to="/" class="navbar-logo-link">
         <img
           class="logo"
-          src="http://ceng1.cumhuriyet.edu.tr/images/logo2.png"
+          src="/logo.png"
           alt="Logo"
         />
         <span class="site-name">Ceng Rehber</span>
