@@ -59,7 +59,7 @@ if (require.main === module) {
   }
 
   // Debug log: URI’nin ne geldiğini göreceğiz
-  console.log('🔍 DEBUG MONGO_URI:', uri.slice(0, 50));
+  //console.log('🔍 DEBUG MONGO_URI:', uri.slice(0, 50));
 
   mongoose
     .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
