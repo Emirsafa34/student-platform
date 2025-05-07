@@ -1,6 +1,6 @@
 // backend/controllers/qaController.js
 
-const QA = require('../models/Qa');
+const QA = require('../models/Question');
 const asyncHandler = require('express-async-handler');
 
 // Create question

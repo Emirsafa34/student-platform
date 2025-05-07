@@ -1,4 +1,4 @@
-// backend/models/Qa.js
+// backend/models/Question.js
 
 const mongoose = require('mongoose');
 
