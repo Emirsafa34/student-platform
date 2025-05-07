@@ -96,26 +96,6 @@ npm test
 
 ## Deployment
 
-### Docker
-
-1. Build Docker images:
-
-   ```bash
-   docker build -t student-platform-backend backend/
-   docker build -t student-platform-frontend frontend/
-   ```
-
-2. Run containers:
-
-   ```bash
-   docker run -d -p 3000:3000 --name backend -e MONGO_URI=<your-mongo-uri> -e JWT_SECRET=<your-secret> student-platform-backend
-   docker run -d -p 80:80 --name frontend student-platform-frontend
-   ```
-
-### Vercel / Heroku
-
-- Frontend can be deployed directly via Vercel by connecting the `frontend/` directory.
-- Backend can be deployed to Heroku; set config vars `MONGO_URI` and `JWT_SECRET` in Heroku dashboard.
 
 ## Contributing
 
